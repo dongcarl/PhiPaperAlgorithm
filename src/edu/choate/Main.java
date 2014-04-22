@@ -1,6 +1,7 @@
 package edu.choate;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.lang.Integer;
 
@@ -24,17 +25,17 @@ public class Main
 	    ArrayList<ArrayList<Integer>> F = allSubsets(V, n);
 
 	    //Step 2
-		step2(F, E, k);
+		step2(F, E, k, n, true);
 
 	    //Step 3
 	    while (E.size() < TARGET)
 	    {
 		    System.out.println(E.size());
-		    ArrayList<ArrayList<Integer>> selectedElements = selectedElements(E);
+		    ArrayList<ArrayList<Integer>> selectedElements = selectedElements(E, n);
 		    F.addAll(selectedElements);
 		    E.removeAll(selectedElements);
 
-		    step2(F, E, k);
+		    step2(F, E, k, n, false);
 	    }
 
 	    System.out.println("ended with n");
@@ -76,32 +77,97 @@ public class Main
 
     }
 
-	public static ArrayList<ArrayList<Integer>> selectedElements(ArrayList<ArrayList<Integer>> incomingE)
+	public static ArrayList<ArrayList<Integer>> selectedElements(ArrayList<ArrayList<Integer>> incomingE, int incomingN)
 	{
-		ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
-		ArrayList<ArrayList<Integer>> dup = new ArrayList<ArrayList<Integer>>(incomingE);
+		ArrayList<ArrayList<Integer>> orderedE = orderArrayListUsingRVectors(incomingE, allRVectors(incomingE, incomingN));
+		ArrayList<ArrayList<Integer>> backupOrderedE = new ArrayList<ArrayList<Integer>>(orderedE);
 
-		int Min = 0;
-		int Max = dup.size() - 1;
-
-		int howmany = Min + (int)(Math.random() * ((Max - Min) + 1));
-
-		for (long i = 0; i < howmany; i++)
+		for (int i = backupOrderedE.size()-1; i >= (3.0/4)*backupOrderedE.size(); i--)
 		{
-			int whichone = Min + (int)(Math.random() * ((Max - Min) + 1));
-			list.add(dup.get(whichone));
-			dup.remove(dup.get(whichone));
-			Max = dup.size() - 1;
+			orderedE.remove(backupOrderedE.get(i));
 		}
 
-		return list;
+		return orderedE;
+
+
+
+
+
+
+
+
+//		ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+//		ArrayList<ArrayList<Integer>> dup = new ArrayList<ArrayList<Integer>>(incomingE);
+//
+//		int Min = 0;
+//		int Max = dup.size() - 1;
+//
+//		int howmany = Min + (int)(Math.random() * ((Max - Min) + 1));
+//
+//		for (long i = 0; i < howmany; i++)
+//		{
+//			int whichone = Min + (int)(Math.random() * ((Max - Min) + 1));
+//			list.add(dup.get(whichone));
+//			dup.remove(dup.get(whichone));
+//			Max = dup.size() - 1;
+//		}
+//
+//		return list;
 	}
 
-	public static void step2(ArrayList<ArrayList<Integer>> F, ArrayList<ArrayList<Integer>> E, int k)
+	public static ArrayList<ArrayList<Integer>> allRVectors(ArrayList<ArrayList<Integer>> incomingE, int incomingN)
 	{
+		ArrayList<ArrayList<Integer>> allRs = new ArrayList<ArrayList<Integer>>();
+
+		for (int i = 0; i < incomingE.size(); i++)
+		{
+			allRs.add(rVectorOf(incomingE, i, incomingN));
+		}
+
+		return allRs;
+	}
+
+
+	public static ArrayList<Integer> rVectorOf(ArrayList<ArrayList<Integer>> incomingE, int index, int incomingN)
+	{
+		ArrayList<Integer> outgoingRVector = new ArrayList<Integer>();
+		ArrayList<Integer> f = incomingE.get(index);
+
+		for (int i = 0; i <= incomingN - 1; i++)
+		{
+			int validCounter = 0;
+			for (ArrayList<Integer> e : incomingE)
+			{
+				if (e != f)
+				{
+					ArrayList<Integer> intersection = new ArrayList<Integer>(f);
+					intersection.retainAll(e);
+
+					if (intersection.size() == i)
+					{
+						validCounter++;
+					}
+				}
+			}
+			outgoingRVector.add(validCounter);
+		}
+
+		return outgoingRVector;
+	}
+
+	public static void step2(ArrayList<ArrayList<Integer>> F, ArrayList<ArrayList<Integer>> E, int k, int n, boolean isRandomShuffle)
+	{
+		if (isRandomShuffle)
+		{
+			long seed = System.nanoTime();
+			Collections.shuffle(F, new Random(seed));
+		}
+		else
+		{
+			F = orderArrayListUsingRVectors(F, allRVectors(F, n));
+		}
 		// shuffles F
-		long seed = System.nanoTime();
-		Collections.shuffle(F, new Random(seed));
+
 
 		// iterates through F
 
@@ -216,6 +282,59 @@ public class Main
 		}
 		return resultPowerSet;
 	}
+
+	public static double distanceBetween(ArrayList<Integer> integerArrayList1, ArrayList<Integer> integerArrayList2)
+	{
+		long sum = 0;
+
+		if (integerArrayList1.size() == integerArrayList2.size())
+		{
+			for (int i = 0; i < integerArrayList1.size(); i++)
+			{
+				sum += (integerArrayList1.get(i) - integerArrayList2.get(i)) * (integerArrayList1.get(i) - integerArrayList2.get(i));
+			}
+		}
+
+		return Math.sqrt(sum);
+	}
+
+	public static ArrayList<Double> allDistancesFrom(ArrayList<Integer> integerArrayList1, ArrayList<ArrayList<Integer>> integerArrayList2)
+	{
+		ArrayList<Double> outgoingAllDistances = new ArrayList<Double>();
+
+		for (int i = 0; i < integerArrayList2.size(); i++)
+		{
+			outgoingAllDistances.add(distanceBetween(integerArrayList2.get(i), integerArrayList1));
+		}
+
+		return outgoingAllDistances;
+	}
+
+	public static ArrayList<ArrayList<Integer>> orderArrayListUsingRVectors(ArrayList<ArrayList<Integer>> incomingArrayList, ArrayList<ArrayList<Integer>> allRVectors)
+	{
+		ArrayList<Double> distanceArray = allDistancesFrom(new ArrayList<Integer>(), allRVectors);
+		ArrayList<Double> backupDistanceArray = new ArrayList<Double>(distanceArray);
+		ArrayList<ArrayList<Integer>> sortedIncomingArrayList = new ArrayList<ArrayList<Integer>>();
+
+		if (incomingArrayList.size() == distanceArray.size())
+		{
+			Collections.sort(distanceArray);
+
+			for (int i = 0; i < distanceArray.size(); i++)
+			{
+				double d = distanceArray.get(i);
+				int indexOfDInBackup = backupDistanceArray.indexOf(d);
+
+				sortedIncomingArrayList.add(incomingArrayList.get(indexOfDInBackup));
+			}
+		}
+
+		return sortedIncomingArrayList;
+	}
+
+
+
+
 }
 
 class intersectionGrid
@@ -229,3 +348,4 @@ class intersectionGrid
 		numIntersected = new ArrayList<Integer>();
 	}
 }
+
