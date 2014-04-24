@@ -1,15 +1,23 @@
 package edu.choate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by dongcarl on 4/22/14.
  */
 public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 {
+	public IntegerSet(List<Integer> integers)
+	{
+		for(Integer i : integers)
+			{this.add(i);}
+	}
+
+	public IntegerSet()
+	{
+		super();
+	}
+
 	@Override
 	public boolean add(Integer integer)
 	{

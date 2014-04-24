@@ -8,6 +8,8 @@ import java.lang.Integer;
 public class Main
 {
 
+	rVector idealRVector = new rVector();
+
     public static void main(String[] args)
     {
         //Step 1
@@ -16,13 +18,15 @@ public class Main
 	    int k = 3;
 
 	    int TARGET = 10;
+	    double percentExclude = 0.8;
 
-		ArrayList<ArrayList<Integer>> E = new ArrayList<ArrayList<Integer>>();
 
-	    ArrayList<Integer> V = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6));
+		SetFamily E = new SetFamily();
+
+	    IntegerSet V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6));
 
 	    // The next line has a big big O and we should find a more efficient alternative
-	    ArrayList<ArrayList<Integer>> F = allSubsets(V, n);
+	    SetFamily F = allSubsets(V, n);
 
 	    //Step 2
 		step2(F, E, k, n, true);
@@ -31,7 +35,7 @@ public class Main
 	    while (E.size() < TARGET)
 	    {
 		    System.out.println(E.size());
-		    ArrayList<ArrayList<Integer>> selectedElements = selectedElements(E, n);
+		    SetFamily selectedElements = selectedElements(E, n, percentExclude);
 		    F.addAll(selectedElements);
 		    E.removeAll(selectedElements);
 
@@ -55,64 +59,21 @@ public class Main
 
 	    System.out.println("ended with F");
 	    System.out.println(F);
-
-
-//	    Set<ArrayList> arr = new HashSet<ArrayList>(Arrays.asList(
-//			    new ArrayList<Integer>(Arrays.asList(new Integer(1), new Integer(2), new Integer(3))),
-//			    new ArrayList<Integer>(Arrays.asList(new Integer(1), new Integer(3), new Integer(4))),
-//			    new ArrayList<Integer>(Arrays.asList(new Integer(1), new Integer(4), new Integer(5))),
-//			    new ArrayList<Integer>(Arrays.asList(new Integer(1), new Integer(5), new Integer(6))),
-//			    new ArrayList<Integer>(Arrays.asList(new Integer(2), new Integer(3), new Integer(5))),
-//			    new ArrayList<Integer>(Arrays.asList(new Integer(2), new Integer(4), new Integer(5))),
-//			    new ArrayList<Integer>(Arrays.asList(new Integer(2), new Integer(4), new Integer(6))),
-//			    new ArrayList<Integer>(Arrays.asList(new Integer(3), new Integer(2), new Integer(6))),
-//			    new ArrayList<Integer>(Arrays.asList(new Integer(3), new Integer(5), new Integer(6)))
-//
-//	    ));
-//
-//	    Set subsets = allSubsets(arr, 3);
-//
-//	    System.out.println(subsets);
-//	    System.out.println("and it has size of: " + subsets.size());
-
     }
 
-	public static ArrayList<ArrayList<Integer>> selectedElements(ArrayList<ArrayList<Integer>> incomingE, int incomingN)
+	public static SetFamily selectedElements(SetFamily incomingE, int incomingN, double incomingExclusionPercentage)
 	{
-		ArrayList<ArrayList<Integer>> orderedE = orderArrayListUsingRVectors(incomingE, allRVectors(incomingE, incomingN));
-		ArrayList<ArrayList<Integer>> backupOrderedE = new ArrayList<ArrayList<Integer>>(orderedE);
+		SetFamily eClone = new SetFamily(incomingE);
+		Collections.sort(eClone, new IntegerSetUsingRVectorComparator(idealRVector, eClone, incomingN));
 
-		for (int i = backupOrderedE.size()-1; i >= (3.0/4)*backupOrderedE.size(); i--)
+		int numExcluded = (int)(eClone.size() * incomingExclusionPercentage);
+
+		for (int i = 0; i < numExcluded; i++)
 		{
-			orderedE.remove(backupOrderedE.get(i));
+			eClone.pop();
 		}
 
-		return orderedE;
-
-
-
-
-
-
-
-
-//		ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
-//		ArrayList<ArrayList<Integer>> dup = new ArrayList<ArrayList<Integer>>(incomingE);
-//
-//		int Min = 0;
-//		int Max = dup.size() - 1;
-//
-//		int howmany = Min + (int)(Math.random() * ((Max - Min) + 1));
-//
-//		for (long i = 0; i < howmany; i++)
-//		{
-//			int whichone = Min + (int)(Math.random() * ((Max - Min) + 1));
-//			list.add(dup.get(whichone));
-//			dup.remove(dup.get(whichone));
-//			Max = dup.size() - 1;
-//		}
-//
-//		return list;
+		return eClone;
 	}
 
 	public static ArrayList<ArrayList<Integer>> allRVectors(ArrayList<ArrayList<Integer>> incomingE, int incomingN)
@@ -155,7 +116,7 @@ public class Main
 		return outgoingRVector;
 	}
 
-	public static void step2(ArrayList<ArrayList<Integer>> F, ArrayList<ArrayList<Integer>> E, int k, int n, boolean isRandomShuffle)
+	public static void step2(SetFamily F, SetFamily E, int k, int n, boolean isRandomShuffle)
 	{
 		if (isRandomShuffle)
 		{
@@ -175,8 +136,8 @@ public class Main
 
 		for (ArrayList<Integer> f : dup)
 		{
-			ArrayList<Integer> actualF = F.get(F.indexOf(f));
-			ArrayList<ArrayList<Integer>> union = new ArrayList<ArrayList<Integer>>(E);
+			IntegerSet actualF = F.get(F.indexOf(f));
+			SetFamily union = new SetFamily(E);
 			union.add(actualF);
 
 			if (!containDelta(union, k))
@@ -248,12 +209,12 @@ public class Main
 	}
 
 	// Takes in V, the ArrayList of elements, and n, how many elements we need
-	public static ArrayList<ArrayList<Integer>> allSubsets(ArrayList<Integer> incomingArrayList, int incomingNumberOfElements)
+	public static SetFamily allSubsets(IntegerSet incomingArrayList, int incomingNumberOfElements)
 	{
-		ArrayList<ArrayList<Integer>> outgoingArrayList = new ArrayList<ArrayList<Integer>>();
-		ArrayList<ArrayList<Integer>> powerSet = powerSet(incomingArrayList);
+		SetFamily outgoingArrayList = new SetFamily();
+		SetFamily powerSet = powerSet(incomingArrayList);
 
-		for (ArrayList<Integer> set : powerSet)
+		for (IntegerSet set : powerSet)
 		{
 			if (set.size() == incomingNumberOfElements)
 			{
@@ -264,73 +225,73 @@ public class Main
 		return outgoingArrayList;
 	}
 
-	static public <T> ArrayList<ArrayList<T>> powerSet(ArrayList<T> inputSet) {
-		ArrayList<ArrayList<T>> resultPowerSet = new ArrayList<ArrayList<T>>();
+	static public SetFamily powerSet(IntegerSet inputSet) {
+		SetFamily resultPowerSet = new SetFamily();
 
 		if (inputSet.isEmpty()) {
-			resultPowerSet.add(new ArrayList<T>());
+			resultPowerSet.add(new IntegerSet());
 			return resultPowerSet;
 		}
 
-		T headElement = inputSet.remove(0);
-		ArrayList<ArrayList<T>> tailPowerSet = powerSet(inputSet);
+		Integer headElement = inputSet.remove(0);
+		SetFamily tailPowerSet = powerSet(inputSet);
 		resultPowerSet.addAll(tailPowerSet);
-		for (ArrayList<T> tailSet : tailPowerSet) {
-			ArrayList<T> headSet = new ArrayList<T>(tailSet);
+		for (IntegerSet tailSet : tailPowerSet) {
+			IntegerSet headSet = new IntegerSet(tailSet);
 			headSet.add(headElement);
 			resultPowerSet.add(headSet);
 		}
 		return resultPowerSet;
 	}
 
-	public static double distanceBetween(ArrayList<Integer> integerArrayList1, ArrayList<Integer> integerArrayList2)
-	{
-		long sum = 0;
-
-		if (integerArrayList1.size() == integerArrayList2.size())
-		{
-			for (int i = 0; i < integerArrayList1.size(); i++)
-			{
-				sum += (integerArrayList1.get(i) - integerArrayList2.get(i)) * (integerArrayList1.get(i) - integerArrayList2.get(i));
-			}
-		}
-
-		return Math.sqrt(sum);
-	}
-
-	public static ArrayList<Double> allDistancesFrom(ArrayList<Integer> integerArrayList1, ArrayList<ArrayList<Integer>> integerArrayList2)
-	{
-		ArrayList<Double> outgoingAllDistances = new ArrayList<Double>();
-
-		for (int i = 0; i < integerArrayList2.size(); i++)
-		{
-			outgoingAllDistances.add(distanceBetween(integerArrayList2.get(i), integerArrayList1));
-		}
-
-		return outgoingAllDistances;
-	}
-
-	public static ArrayList<ArrayList<Integer>> orderArrayListUsingRVectors(ArrayList<ArrayList<Integer>> incomingArrayList, ArrayList<ArrayList<Integer>> allRVectors)
-	{
-		ArrayList<Double> distanceArray = allDistancesFrom(new ArrayList<Integer>(), allRVectors);
-		ArrayList<Double> backupDistanceArray = new ArrayList<Double>(distanceArray);
-		ArrayList<ArrayList<Integer>> sortedIncomingArrayList = new ArrayList<ArrayList<Integer>>();
-
-		if (incomingArrayList.size() == distanceArray.size())
-		{
-			Collections.sort(distanceArray);
-
-			for (int i = 0; i < distanceArray.size(); i++)
-			{
-				double d = distanceArray.get(i);
-				int indexOfDInBackup = backupDistanceArray.indexOf(d);
-
-				sortedIncomingArrayList.add(incomingArrayList.get(indexOfDInBackup));
-			}
-		}
-
-		return sortedIncomingArrayList;
-	}
+//	public static double distanceBetween(ArrayList<Integer> integerArrayList1, ArrayList<Integer> integerArrayList2)
+//	{
+//		long sum = 0;
+//
+//		if (integerArrayList1.size() == integerArrayList2.size())
+//		{
+//			for (int i = 0; i < integerArrayList1.size(); i++)
+//			{
+//				sum += (integerArrayList1.get(i) - integerArrayList2.get(i)) * (integerArrayList1.get(i) - integerArrayList2.get(i));
+//			}
+//		}
+//
+//		return Math.sqrt(sum);
+//	}
+//
+//	public static ArrayList<Double> allDistancesFrom(ArrayList<Integer> integerArrayList1, ArrayList<ArrayList<Integer>> integerArrayList2)
+//	{
+//		ArrayList<Double> outgoingAllDistances = new ArrayList<Double>();
+//
+//		for (int i = 0; i < integerArrayList2.size(); i++)
+//		{
+//			outgoingAllDistances.add(distanceBetween(integerArrayList2.get(i), integerArrayList1));
+//		}
+//
+//		return outgoingAllDistances;
+//	}
+//
+//	public static ArrayList<ArrayList<Integer>> orderArrayListUsingRVectors(ArrayList<ArrayList<Integer>> incomingArrayList, ArrayList<ArrayList<Integer>> allRVectors)
+//	{
+//		ArrayList<Double> distanceArray = allDistancesFrom(new ArrayList<Integer>(), allRVectors);
+//		ArrayList<Double> backupDistanceArray = new ArrayList<Double>(distanceArray);
+//		ArrayList<ArrayList<Integer>> sortedIncomingArrayList = new ArrayList<ArrayList<Integer>>();
+//
+//		if (incomingArrayList.size() == distanceArray.size())
+//		{
+//			Collections.sort(distanceArray);
+//
+//			for (int i = 0; i < distanceArray.size(); i++)
+//			{
+//				double d = distanceArray.get(i);
+//				int indexOfDInBackup = backupDistanceArray.indexOf(d);
+//
+//				sortedIncomingArrayList.add(incomingArrayList.get(indexOfDInBackup));
+//			}
+//		}
+//
+//		return sortedIncomingArrayList;
+//	}
 
 
 
