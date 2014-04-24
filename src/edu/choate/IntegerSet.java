@@ -17,6 +17,15 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 	{
 		super();
 	}
+	
+	public IntegerSet(int[] nums)
+	{
+		for (Integer i : nums)
+		{
+			this.add(i);
+		}
+	}
+	
 
 	@Override
 	public boolean add(Integer integer)
@@ -39,5 +48,42 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 		{
 			super.add(index, element);
 		}
+	}
+	
+	public IntegerSet intersection(IntegerSet right)
+	{
+		IntegerSet retSet= new IntegerSet(this);
+		retSet.retainAll(right);
+		return retSet;
+		
+	}
+	
+	public IntegerSet union(IntegerSet right)
+	{
+		IntegerSet retSet= new IntegerSet(this);
+		retSet.addAll(right);
+		return retSet;
+		
+	}
+	public IntegerSet difference(IntegerSet right)
+	{
+		IntegerSet retSet= new IntegerSet(this);
+		retSet.removeAll(right);
+		return retSet;
+	}
+	
+	public static void main(String[] args)
+	{
+		System.out.println("A set a with 1,2,3");
+		IntegerSet a = new IntegerSet(new int[]{1,2,3});
+		System.out.println(a);
+		System.out.println("A set b with 1,2,4,4");
+		IntegerSet b = new IntegerSet(new int[]{1,2,4,4});
+		System.out.println(b);
+		System.out.println("The intersection of a and b");
+		IntegerSet c = a.intersection(b);
+		System.out.println(c);
+		
+		
 	}
 }
