@@ -8,38 +8,42 @@ import java.lang.Integer;
 public class Main
 {
 
-	rVector idealRVector = new rVector();
+	static rVector idealRVector = new rVector(); //need to find ideal R vector
+	static int n = 3;
+	static int k = 3;
+	static int TARGET = 10;
+	static double percentExclude = 0.8;
+	static SetFamily E = new SetFamily();
+	static IntegerSet V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6));
+	static SetFamily F = allSubsets(V, n);
 
     public static void main(String[] args)
     {
         //Step 1
         // this is declaring the inputs of Phi(n,k)
-	    int n = 3;
-	    int k = 3;
-
-	    int TARGET = 10;
-	    double percentExclude = 0.8;
 
 
-		SetFamily E = new SetFamily();
 
-	    IntegerSet V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6));
+
+
+
+
 
 	    // The next line has a big big O and we should find a more efficient alternative
-	    SetFamily F = allSubsets(V, n);
+
 
 	    //Step 2
-		step2(F, E, k, n, true);
+		step2(true);
 
 	    //Step 3
 	    while (E.size() < TARGET)
 	    {
 		    System.out.println(E.size());
-		    SetFamily selectedElements = selectedElements(E, n, percentExclude);
+		    SetFamily selectedElements = selectedElements(percentExclude);
 		    F.addAll(selectedElements);
 		    E.removeAll(selectedElements);
 
-		    step2(F, E, k, n, false);
+		    step2(false);
 	    }
 
 	    System.out.println("ended with n");
@@ -61,10 +65,10 @@ public class Main
 	    System.out.println(F);
     }
 
-	public static SetFamily selectedElements(SetFamily incomingE, int incomingN, double incomingExclusionPercentage)
+	public static SetFamily selectedElements(double incomingExclusionPercentage)
 	{
-		SetFamily eClone = new SetFamily(incomingE);
-		Collections.sort(eClone, new IntegerSetUsingRVectorComparator(idealRVector, eClone, incomingN));
+		SetFamily eClone = new SetFamily(n, E);
+		Collections.sort(eClone, new IntegerSetUsingRVectorComparator(idealRVector, eClone, n));
 
 		int numExcluded = (int)(eClone.size() * incomingExclusionPercentage);
 
@@ -116,7 +120,7 @@ public class Main
 		return outgoingRVector;
 	}
 
-	public static void step2(SetFamily F, SetFamily E, int k, int n, boolean isRandomShuffle)
+	public static void step2(boolean isRandomShuffle)
 	{
 		if (isRandomShuffle)
 		{
@@ -125,7 +129,7 @@ public class Main
 		}
 		else
 		{
-			F = orderArrayListUsingRVectors(F, allRVectors(F, n));
+			Collections.sort(F, new IntegerSetUsingRVectorComparator(idealRVector, F, n));
 		}
 		// shuffles F
 
@@ -137,7 +141,7 @@ public class Main
 		for (ArrayList<Integer> f : dup)
 		{
 			IntegerSet actualF = F.get(F.indexOf(f));
-			SetFamily union = new SetFamily(E);
+			SetFamily union = new SetFamily(n, E);
 			union.add(actualF);
 
 			if (!containDelta(union, k))

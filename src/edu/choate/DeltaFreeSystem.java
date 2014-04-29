@@ -21,6 +21,13 @@ public class DeltaFreeSystem extends SetFamily {
 		// TODO Auto-generated constructor stub
 	}
 
+	public static boolean checkContainsDelta(int n, int k, SetFamily incomingE)
+	{
+
+	}
+
+
+
 	/**
 	 * 
 	 */

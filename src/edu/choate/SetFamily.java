@@ -25,7 +25,7 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 	@Override
 	public boolean add(IntegerSet integerSet)
 	{
-		if (this.contains(integerSet)||(integerSet.size!=this.n))
+		if (this.contains(integerSet)||(integerSet.size()!=this.n))
 		{
 			return false;
 		}
