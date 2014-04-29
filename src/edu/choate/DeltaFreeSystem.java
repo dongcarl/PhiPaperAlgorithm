@@ -3,6 +3,15 @@
  */
 package edu.choate;
 
+import org.jgrapht.*;
+import org.jgrapht.alg.BronKerboschCliqueFinder;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Objects;
+
 /**
  * This class simulates a family of sets that is delta(n) free for some 
  * given value of n.
@@ -11,6 +20,7 @@ package edu.choate;
  */
 public class DeltaFreeSystem extends SetFamily {
 
+	static SimpleGraph<IntegerSetVertex, IntersectionEdge> graph;
 	/**
 	 * @param n is the size of each set in the family
 	 * @param k is the size the deltasystem that is not allowed.
@@ -23,6 +33,23 @@ public class DeltaFreeSystem extends SetFamily {
 
 	public static boolean checkContainsDelta(int n, int k, SetFamily incomingE)
 	{
+		graph = new SimpleGraph<IntegerSetVertex, IntersectionEdge>(IntersectionEdge.class);
+
+//		intersectionGrid intersectionGrid = new intersectionGrid();
+
+		for (int i = 0; i < incomingE.size(); i++)
+		{
+			for (int v = i+1; v < incomingE.size(); v++)
+			{
+				IntersectionEdge currEdge = new IntersectionEdge(new Intersection(incomingE.get(i), incomingE.get(v)));
+				IntegerSetVertex[] aVertex = (IntegerSetVertex[])currEdge.vertices.toArray();
+				graph.addEdge(aVertex[0], aVertex[1], currEdge);
+			}
+		}
+
+		BronKerboschCliqueFinder<IntegerSetVertex, IntersectionEdge> cliqueFinder = new BronKerboschCliqueFinder<IntegerSetVertex, IntersectionEdge>(graph);
+
+		return cliqueFinder.getBiggestMaximalCliques().iterator().next().size() >= k;
 
 	}
 

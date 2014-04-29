@@ -83,7 +83,5 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 		System.out.println("The intersection of a and b");
 		IntegerSet c = a.intersection(b);
 		System.out.println(c);
-		
-		
 	}
 }
