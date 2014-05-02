@@ -8,9 +8,10 @@ import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Objects;
+import java.security.InvalidParameterException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * This class simulates a family of sets that is delta(n) free for some 
@@ -18,56 +19,75 @@ import java.util.Objects;
  * @author mbardoe
  *
  */
-public class DeltaFreeSystem extends SetFamily {
-
+public class DeltaFreeSystem extends SetFamily
+{
+    private int k;
 	static SimpleGraph<IntegerSetVertex, IntersectionEdge> graph;
-	/**
-	 * @param n is the size of each set in the family
-	 * @param k is the size the deltasystem that is not allowed.
-	 * @param incomingE
-	 */
-	public DeltaFreeSystem(int n, int k, SetFamily incomingE) {
-		super(n, incomingE);
-		// TODO Auto-generated constructor stub
+
+	public DeltaFreeSystem(int incomingN, int incomingK, SetFamily incomingE)
+    {
+        super(incomingN, incomingE);
+
+        k = incomingK;
+        graph = graphFromSetFamily(incomingE);
+
+        if (setFamilyContainsDelta(incomingE))
+        {
+            throw new InvalidParameterException();
+        }
 	}
 
-	public static boolean checkContainsDelta(int n, int k, SetFamily incomingE)
+    public boolean containsDelta()
+    {
+        return graphContainsDelta(graph);
+    }
+
+	public boolean setFamilyContainsDelta(SetFamily incomingSetFamily)
 	{
-		graph = new SimpleGraph<IntegerSetVertex, IntersectionEdge>(IntersectionEdge.class);
+        return graphContainsDelta(graphFromSetFamily(incomingSetFamily));
+	}
+
+    public <V, E> boolean graphContainsDelta(SimpleGraph<V, E> incomingSimpleGraph)
+    {
+        return (new BronKerboschCliqueFinder<V, E>(incomingSimpleGraph)).getBiggestMaximalCliques().iterator().next().size() >= k;
+    }
+
+    public SimpleGraph<IntegerSetVertex, IntersectionEdge> graphFromSetFamily(SetFamily incomingSetFamily)
+    {
+        SimpleGraph<IntegerSetVertex, IntersectionEdge> outgoingGraph = new SimpleGraph<IntegerSetVertex, IntersectionEdge>(IntersectionEdge.class);
 
 //		intersectionGrid intersectionGrid = new intersectionGrid();
 
-		for (int i = 0; i < incomingE.size(); i++)
-		{
-			for (int v = i+1; v < incomingE.size(); v++)
-			{
-				IntersectionEdge currEdge = new IntersectionEdge(new Intersection(incomingE.get(i), incomingE.get(v)));
-				IntegerSetVertex[] aVertex = (IntegerSetVertex[])currEdge.vertices.toArray();
-				graph.addEdge(aVertex[0], aVertex[1], currEdge);
-			}
-		}
+        for (int i = 0; i < incomingSetFamily.size(); i++)
+        {
+            for (int v = i+1; v < incomingSetFamily.size(); v++)
+            {
+                IntersectionEdge currEdge = new IntersectionEdge(new Intersection(incomingSetFamily.get(i), incomingSetFamily.get(v)));
+                outgoingGraph.addVertex(currEdge.alphaVertex);
+                outgoingGraph.addVertex(currEdge.betaVertex);
+                outgoingGraph.addEdge(currEdge.alphaVertex, currEdge.betaVertex, currEdge);
+            }
+        }
 
-		BronKerboschCliqueFinder<IntegerSetVertex, IntersectionEdge> cliqueFinder = new BronKerboschCliqueFinder<IntegerSetVertex, IntersectionEdge>(graph);
+        return outgoingGraph;
+    }
 
-		return cliqueFinder.getBiggestMaximalCliques().iterator().next().size() >= k;
+	public static void main(String[] args)
+    {
+        SetFamily family = new SetFamily();
 
-	}
+        family.n = 3;
+        family.add(new IntegerSet(Arrays.asList(1, 2, 7)));
+        family.add(new IntegerSet(Arrays.asList(1, 3, 7)));
+        family.add(new IntegerSet(Arrays.asList(2, 3, 7)));
+        family.add(new IntegerSet(Arrays.asList(4, 5, 7)));
+        family.add(new IntegerSet(Arrays.asList(4, 6, 7)));
+        family.add(new IntegerSet(Arrays.asList(5, 6, 7)));
 
+        DeltaFreeSystem deltaFreeSystem = new DeltaFreeSystem(3, 3, family);
 
-
-	/**
-	 * 
-	 */
-	public DeltaFreeSystem() {
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
+        System.out.println(deltaFreeSystem);
+        System.out.println(deltaFreeSystem.containsDelta());
+    }
 
 }

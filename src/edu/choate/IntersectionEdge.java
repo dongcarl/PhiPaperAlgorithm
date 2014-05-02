@@ -10,15 +10,20 @@ import java.util.HashSet;
 public class IntersectionEdge extends DefaultEdge
 {
 	static Intersection wrappedIntersection;
-	public HashSet<IntegerSetVertex> vertices;
+    public IntegerSetVertex alphaVertex;
+    public IntegerSetVertex betaVertex;
 
 	public IntersectionEdge(Intersection incomingIntersection)
 	{
 		super();
 		wrappedIntersection = incomingIntersection;
-		for (IntegerSet i : incomingIntersection.sets)
-		{
-			vertices.add(new IntegerSetVertex(i));
-		}
+//		for (IntegerSet i : incomingIntersection.sets)
+//		{
+//            System.out.println("Going to add: " + new IntegerSetVertex(i) + " with IntegerSet: " + i);
+//			vertices.add(new IntegerSetVertex(i));
+//		}
+        
+        alphaVertex = new IntegerSetVertex(incomingIntersection.alphaSet);
+        betaVertex = new IntegerSetVertex(incomingIntersection.betaSet);
 	}
 }

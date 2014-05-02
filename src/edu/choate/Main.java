@@ -155,7 +155,7 @@ public class Main
 
 
 
-	public static boolean containDelta(ArrayList<ArrayList<Integer>> incomingSet, int incomingK)
+	public static boolean containDelta(SetFamily incomingSet, int incomingK)
 	{
 		intersectionGrid intersectionGrid = new intersectionGrid();
 

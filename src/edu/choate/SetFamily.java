@@ -8,8 +8,9 @@ import java.util.*;
  */
 public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 {
-	private int n; // The size of each set
-	public SetFamily(int n, SetFamily incomingE)
+	public int n; // The size of each set
+
+	public SetFamily(int n, ArrayList<IntegerSet> incomingE)
 	{
 		this.n = n;
 		// need to make sure every set is proper size
@@ -70,17 +71,17 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 		}
 		return retSet;
 	}
-	public int[] intersectionVector(IntegerSet integerSet)
-	{
-		//Python code:
-//        assert len(myset)==self.p
-//        ans=[0]*(len(myset)+1)
-//        for aset in self.setList:
-//            x=len(aset.intersection(myset))
-//            ans[x]+=1
-//        return ans[:-1]
-		
-	}
+//	public int[] intersectionVector(IntegerSet integerSet)
+//	{
+//		//Python code:
+////        assert len(myset)==self.p
+////        ans=[0]*(len(myset)+1)
+////        for aset in self.setList:
+////            x=len(aset.intersection(myset))
+////            ans[x]+=1
+////        return ans[:-1]
+//
+//	}
 	
 	public int sizeOfSupport()
 	{
