@@ -4,9 +4,8 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.graph.SimpleGraph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Created by Yicheng on 5/4/2014.
@@ -14,30 +13,29 @@ import java.util.Set;
 public class MyBronKerboschCliqueFinder extends BronKerboschCliqueFinder<IntegerSet, Intersection>
 {
 
-    ArrayList<ArrayList> informationGrid = new ArrayList<ArrayList>();
-    Set<Graph<IntegerSet, Intersection>> graphSet = new HashSet<Graph<IntegerSet, Intersection>>();
-
-    enum columnDescriptors
-    {
-        int intersectionIntegerSetColumn = 0;
-        int
-    }
+//    ArrayList<ArrayList> informationGrid = new ArrayList<ArrayList>();
+    ArrayList<Graph<IntegerSet, Intersection>> allGraphs = new ArrayList<Graph<IntegerSet, Intersection>>();
+	ArrayList<IntegerSet> allIntersectionsRepresentedAsIntegerSets = new ArrayList<IntegerSet>();
+	ArrayList<Integer> allMaxNumCliquesForGraph = new ArrayList<Integer>();
+	ArrayList<Collection<Set<IntegerSet>>> allBiggestCliques = new ArrayList<Collection<Set<IntegerSet>>>();
+	public int maxCliqueNum = 0;
 
     public MyBronKerboschCliqueFinder(Graph<IntegerSet, Intersection> graph)
     {
         super(graph);
 
-        SetFamily allIntersections = new SetFamily();
+	    // generate all intersections
         for (Intersection i : graph.edgeSet())
         {
 
-            if (!allIntersections.contains(i.toIntegerSet()))
+            if (!allIntersectionsRepresentedAsIntegerSets.contains(i.toIntegerSet()))
             {
-                allIntersections.add(i.toIntegerSet());
+                allIntersectionsRepresentedAsIntegerSets.add(i.toIntegerSet());
             }
         }
 
-        for (IntegerSet i : allIntersections)
+	    //generate all graphs for intersections
+        for (IntegerSet i : allIntersectionsRepresentedAsIntegerSets)
         {
             Graph<IntegerSet, Intersection> graphForCurrentIntersectionI = new SimpleGraph<IntegerSet, Intersection>(Intersection.class);
 
@@ -51,15 +49,27 @@ public class MyBronKerboschCliqueFinder extends BronKerboschCliqueFinder<Integer
                 }
             }
 
-            graphSet.add(graphForCurrentIntersectionI);
+            allGraphs.add(graphForCurrentIntersectionI);
         }
 
-
+	    for (Graph<IntegerSet, Intersection> i : allGraphs)
+	    {
+		    BronKerboschCliqueFinder<IntegerSet, Intersection> currCliqueFinder = new BronKerboschCliqueFinder<IntegerSet, Intersection>(i);
+		    int currSize = currCliqueFinder.getBiggestMaximalCliques().iterator().next().size();
+			allMaxNumCliquesForGraph.add(currSize);
+		    allBiggestCliques.add(currCliqueFinder.getBiggestMaximalCliques());
+	    }
+	    maxCliqueNum = Collections.max(allMaxNumCliquesForGraph);
     }
 
 //    @Override
 //    public Collection<Set<V>> getAllMaximalCliques()
 //    {
+//	    for (Collection<Set<IntegerSet>> i : informationGrid.get(allBiggestCliquesForGraphColumn))
+//	    {
+//
+//	    }
+//
 //        return super.getAllMaximalCliques();
 //    }
 //

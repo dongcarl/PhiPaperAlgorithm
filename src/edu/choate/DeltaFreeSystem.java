@@ -60,17 +60,19 @@ public class DeltaFreeSystem extends SetFamily
         return graphContainsDelta(graph);
     }
 
-    public <V, E> boolean graphContainsDelta(SimpleGraph<V, E> incomingSimpleGraph)
+    public boolean graphContainsDelta(SimpleGraph<IntegerSet, Intersection> incomingSimpleGraph)
     {
         System.out.println("At the very first line of graphContainsDelta with parameter: " + incomingSimpleGraph);
         System.out.println("incomingSimpleGraph has MaximalCliques: ");
 
-        Collection<Set<V>> maximalCliques = (new BronKerboschCliqueFinder<V, E>(incomingSimpleGraph)).getBiggestMaximalCliques();
-        for (Set<V> i : maximalCliques)
-        {
-            System.out.println("Set<V> " + i + " of " + maximalCliques.size() + " elements in maximalCliques has " + i.size() + " elements");
-        }
-        return (new BronKerboschCliqueFinder<V, E>(incomingSimpleGraph)).getBiggestMaximalCliques().iterator().next().size() >= k;
+	    MyBronKerboschCliqueFinder cliqueFinder = new MyBronKerboschCliqueFinder(incomingSimpleGraph);
+	    return cliqueFinder.maxCliqueNum >= k;
+//        Collection<Set<V>> maximalCliques = (new BronKerboschCliqueFinder<V, E>(incomingSimpleGraph)).getBiggestMaximalCliques();
+//        for (Set<V> i : maximalCliques)
+//        {
+//            System.out.println("Set<V> " + i + " of " + maximalCliques.size() + " elements in maximalCliques has " + i.size() + " elements");
+//        }
+//        return (new BronKerboschCliqueFinder<V, E>(incomingSimpleGraph)).getBiggestMaximalCliques().iterator().next().size() >= k;
     }
 
     public Set<Intersection> allIntersections()
@@ -78,15 +80,15 @@ public class DeltaFreeSystem extends SetFamily
         return graph.edgeSet();
     }
 
-    public Set<SimpleGraph<IntegerSet, DefaultEdge>> allGraphsOfIntersections(Set<Intersection> intersectionSet)
-    {
-        Set<SimpleGraph<IntegerSet, DefaultEdge>> outgoingGraphs = new HashSet<SimpleGraph<IntegerSet, DefaultEdge>>();
-
-        for (Intersection intersection : intersectionSet)
-        {
-
-        }
-    }
+//    public Set<SimpleGraph<IntegerSet, DefaultEdge>> allGraphsOfIntersections(Set<Intersection> intersectionSet)
+//    {
+//        Set<SimpleGraph<IntegerSet, DefaultEdge>> outgoingGraphs = new HashSet<SimpleGraph<IntegerSet, DefaultEdge>>();
+//
+//        for (Intersection intersection : intersectionSet)
+//        {
+//
+//        }
+//    }
 
     public SimpleGraph<IntegerSet, Intersection> graphFromSetFamily(SetFamily incomingSetFamily)
     {
@@ -155,8 +157,8 @@ public class DeltaFreeSystem extends SetFamily
 
 }
 
-class intersectionAndGraphPair
-{
-    Intersection intersection;
-    Graph<IntegerSet, Intersection> graph = ;
-}
+//class intersectionAndGraphPair
+//{
+//    Intersection intersection;
+//    Graph<IntegerSet, Intersection> graph = ;
+//}
