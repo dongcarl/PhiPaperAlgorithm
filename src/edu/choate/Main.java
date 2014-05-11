@@ -8,29 +8,45 @@ import java.lang.Integer;
 public class Main
 {
 
-	static rVector idealRVector = new rVector(); //need to find ideal R vector
-	static int n = 3;
+	//Step 1
+
+	static int n = 2;
 	static int k = 3;
-	static int TARGET = 10;
+	static int TARGET = 6;
 	static double percentExclude = 0.8;
-	static SetFamily E = new SetFamily();
-	static IntegerSet V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6));
-	static SetFamily F = allSubsets(V, n);
-
-    public static void main(String[] args)
-    {
-        //Step 1
-        // this is declaring the inputs of Phi(n,k)
+	static SetFamily E;
+	static IntegerSet V;
+	static SetFamily F;
+	static idealRVector idealRVector; //need to find ideal R vector
 
 
+	public static void main(String[] args) throws InterruptedException
+	{
+		E = new SetFamily();
+		V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6));
+		F = getSubsets(V, n);
+		System.out.println(V);
+		idealRVector = new idealRVector(n);
 
+	    System.out.println("main function called with primitive fields:");
+	    System.out.println('\t' + "n = " + n);
+	    System.out.println('\t' + "k = " + k);
+	    System.out.println('\t' + "TARGET = " + TARGET);
+	    System.out.println('\t' + "percentExclude = " + percentExclude);
 
+	    System.out.println("main function called with SetFamily E =");
+	    System.out.println("\t" + E);
+	    System.out.println("main function called with IntegerSet V =");
+	    System.out.println("\t" + V);
+	    System.out.println("main function called with SetFamily F =");
+	    System.out.println("\t" + F);
+	    System.out.println("main function called with idealRVector idealRVector =");
+	    System.out.println("\t" + idealRVector);
 
-
-
-
-	    // The next line has a big big O and we should find a more efficient alternative
-
+//		for (int i = 0; i < 10000000; i++)
+//		{
+//			Thread.sleep(10000);
+//		}
 
 	    //Step 2
 		step2(true);
@@ -157,44 +173,46 @@ public class Main
 
 	public static boolean containDelta(SetFamily incomingSet, int incomingK)
 	{
-		intersectionGrid intersectionGrid = new intersectionGrid();
-
-		for (int i = 0; i < incomingSet.size(); i++)
-		{
-			for (int v = i+1; v < incomingSet.size(); v++)
-			{
-				ArrayList<Integer> s1 = incomingSet.get(i);
-				ArrayList<Integer> s2 = incomingSet.get(v);
-
-				ArrayList<Integer> intersection = new ArrayList<Integer>(s1);
-				intersection.retainAll(s2);
-
-				int currInd = intersectionGrid.intersections.indexOf(intersection);
-
-				if (currInd == -1)
-				{
-					intersectionGrid.intersections.add(intersection);
-					intersectionGrid.numIntersected.add(1);
-				}
-				else
-				{
-					intersectionGrid.numIntersected.set(currInd, intersectionGrid.numIntersected.get(currInd) + 1);
-				}
-
-			}
-		}
-
-		long max;
-		if (intersectionGrid.numIntersected.size() == 0)
-		{
-			max = 0;
-		}
-		else
-		{
-			max = Collections.max(intersectionGrid.numIntersected);
-		}
-
-		return max >= choose(incomingK, 2);
+		DeltaFreeSystem deltaFreeSystem = new DeltaFreeSystem(n, k, incomingSet);
+		return deltaFreeSystem.containsDelta();
+//		intersectionGrid intersectionGrid = new intersectionGrid();
+//
+//		for (int i = 0; i < incomingSet.size(); i++)
+//		{
+//			for (int v = i+1; v < incomingSet.size(); v++)
+//			{
+//				ArrayList<Integer> s1 = incomingSet.get(i);
+//				ArrayList<Integer> s2 = incomingSet.get(v);
+//
+//				ArrayList<Integer> intersection = new ArrayList<Integer>(s1);
+//				intersection.retainAll(s2);
+//
+//				int currInd = intersectionGrid.intersections.indexOf(intersection);
+//
+//				if (currInd == -1)
+//				{
+//					intersectionGrid.intersections.add(intersection);
+//					intersectionGrid.numIntersected.add(1);
+//				}
+//				else
+//				{
+//					intersectionGrid.numIntersected.set(currInd, intersectionGrid.numIntersected.get(currInd) + 1);
+//				}
+//
+//			}
+//		}
+//
+//		long max;
+//		if (intersectionGrid.numIntersected.size() == 0)
+//		{
+//			max = 0;
+//		}
+//		else
+//		{
+//			max = Collections.max(intersectionGrid.numIntersected);
+//		}
+//
+//		return max >= choose(incomingK, 2);
 	}
 
 	public static long choose(long m, long k)
@@ -212,105 +230,43 @@ public class Main
 		return fact;
 	}
 
-	// Takes in V, the ArrayList of elements, and n, how many elements we need
-	public static SetFamily allSubsets(IntegerSet incomingArrayList, int incomingNumberOfElements)
-	{
-		SetFamily outgoingArrayList = new SetFamily();
-		SetFamily powerSet = powerSet(incomingArrayList);
-
-		for (IntegerSet set : powerSet)
-		{
-			if (set.size() == incomingNumberOfElements)
-			{
-				outgoingArrayList.add(set);
-			}
-		}
-
-		return outgoingArrayList;
-	}
-
-	static public SetFamily powerSet(IntegerSet inputSet) {
-		SetFamily resultPowerSet = new SetFamily();
-
-		if (inputSet.isEmpty()) {
-			resultPowerSet.add(new IntegerSet());
-			return resultPowerSet;
-		}
-
-		Integer headElement = inputSet.remove(0);
-		SetFamily tailPowerSet = powerSet(inputSet);
-		resultPowerSet.addAll(tailPowerSet);
-		for (IntegerSet tailSet : tailPowerSet) {
-			IntegerSet headSet = new IntegerSet(tailSet);
-			headSet.add(headElement);
-			resultPowerSet.add(headSet);
-		}
-		return resultPowerSet;
-	}
-
-//	public static double distanceBetween(ArrayList<Integer> integerArrayList1, ArrayList<Integer> integerArrayList2)
+//	// Takes in V, the ArrayList of elements, and n, how many elements we need
+//	public static SetFamily allSubsets(IntegerSet incomingArrayList, int incomingNumberOfElements)
 //	{
-//		long sum = 0;
+//		SetFamily outgoingArrayList = new SetFamily();
+//		SetFamily powerSet = powerSet((IntegerSet)incomingArrayList.clone());
 //
-//		if (integerArrayList1.size() == integerArrayList2.size())
+//		for (IntegerSet set : powerSet)
 //		{
-//			for (int i = 0; i < integerArrayList1.size(); i++)
+//			if (set.size() == incomingNumberOfElements)
 //			{
-//				sum += (integerArrayList1.get(i) - integerArrayList2.get(i)) * (integerArrayList1.get(i) - integerArrayList2.get(i));
+//				outgoingArrayList.add(set);
 //			}
 //		}
 //
-//		return Math.sqrt(sum);
-//	}
-//
-//	public static ArrayList<Double> allDistancesFrom(ArrayList<Integer> integerArrayList1, ArrayList<ArrayList<Integer>> integerArrayList2)
-//	{
-//		ArrayList<Double> outgoingAllDistances = new ArrayList<Double>();
-//
-//		for (int i = 0; i < integerArrayList2.size(); i++)
-//		{
-//			outgoingAllDistances.add(distanceBetween(integerArrayList2.get(i), integerArrayList1));
-//		}
-//
-//		return outgoingAllDistances;
-//	}
-//
-//	public static ArrayList<ArrayList<Integer>> orderArrayListUsingRVectors(ArrayList<ArrayList<Integer>> incomingArrayList, ArrayList<ArrayList<Integer>> allRVectors)
-//	{
-//		ArrayList<Double> distanceArray = allDistancesFrom(new ArrayList<Integer>(), allRVectors);
-//		ArrayList<Double> backupDistanceArray = new ArrayList<Double>(distanceArray);
-//		ArrayList<ArrayList<Integer>> sortedIncomingArrayList = new ArrayList<ArrayList<Integer>>();
-//
-//		if (incomingArrayList.size() == distanceArray.size())
-//		{
-//			Collections.sort(distanceArray);
-//
-//			for (int i = 0; i < distanceArray.size(); i++)
-//			{
-//				double d = distanceArray.get(i);
-//				int indexOfDInBackup = backupDistanceArray.indexOf(d);
-//
-//				sortedIncomingArrayList.add(incomingArrayList.get(indexOfDInBackup));
-//			}
-//		}
-//
-//		return sortedIncomingArrayList;
+//		return outgoingArrayList;
 //	}
 
+	private static void getSubsets(IntegerSet superSet, int k, int idx, IntegerSet current,SetFamily solution) {
+		//successful stop clause
+		if (current.size() == k) {
+			solution.add(new IntegerSet(current));
+			return;
+		}
+		//unseccessful stop clause
+		if (idx == superSet.size()) return;
+		Integer x = superSet.get(idx);
+		current.add(x);
+		//"guess" x is in the subset
+		getSubsets(superSet, k, idx+1, current, solution);
+		current.remove(x);
+		//"guess" x is not in the subset
+		getSubsets(superSet, k, idx+1, current, solution);
+	}
 
-
-
-}
-
-class intersectionGrid
-{
-	ArrayList<List> intersections;
-	ArrayList<Integer> numIntersected;
-
-	public intersectionGrid()
-	{
-		intersections = new ArrayList<List>();
-		numIntersected = new ArrayList<Integer>();
+	public static SetFamily getSubsets(IntegerSet superSet, int k) {
+		SetFamily res = new SetFamily();
+		getSubsets(superSet, k, 0, new IntegerSet(), res);
+		return res;
 	}
 }
-

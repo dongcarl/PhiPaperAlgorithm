@@ -7,9 +7,9 @@ import java.util.Comparator;
  */
 public class rVectorComparator implements Comparator<rVector>
 {
-	public static rVector idealRVector;
+	public static idealRVector idealRVector;
 	
-	public rVectorComparator(rVector incomingIdealRVector)
+	public rVectorComparator(idealRVector incomingIdealRVector)
 	{
 		super();
 		idealRVector = incomingIdealRVector;
