@@ -8,25 +8,30 @@ import java.util.*;
  */
 public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 {
-	public int n; // The size of each set
+	public Integer n; // The size of each set
 
 	public SetFamily(int n, ArrayList<IntegerSet> incomingE)
 	{
+		super();
 		this.n = n;
-		// need to make sure every set is proper size
-		this.addAll(incomingE);
+ 		this.addAll(incomingE);
+	}
+
+	public SetFamily(int incomingN)
+	{
+		super();
+		n = incomingN;
 	}
 
 	public SetFamily()
 	{
 		super();
-		this.n=3;
 	}
 
 	@Override
 	public boolean add(IntegerSet integerSet)
 	{
-		if (this.contains(integerSet)||(integerSet.size()!=this.n))
+		if (this.contains(integerSet)||(integerSet.size()!=this.n)||(n == null))
 		{
 			return false;
 		}
@@ -44,7 +49,7 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 	}
 
 
-	public void pop()
+	public void removeLast()
 	{
 		// I don't get what this is doing. DB
 		this.remove(this.size()-1);
@@ -65,33 +70,25 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 			for (Integer vertex: currentSet)
 			{
 				retSet.add(vertex);
-				
 			}
 			
 		}
 		return retSet;
 	}
-//	public int[] intersectionVector(IntegerSet integerSet)
-//	{
-//		//Python code:
-////        assert len(myset)==self.p
-////        ans=[0]*(len(myset)+1)
-////        for aset in self.setList:
-////            x=len(aset.intersection(myset))
-////            ans[x]+=1
-////        return ans[:-1]
-//
-//	}
-	
-	public int sizeOfSupport()
+
+	public IntersectionGraphFamilyWrapper toIntersectionGraphs()
 	{
-		return this.support().size();
+		IntersectionGraphFamilyWrapper outgoingIntersectionGraphs = new IntersectionGraphFamilyWrapper();
+
+		for (int i = 0; i < this.size(); i++)
+		{
+			for (int v = i + 1; v < this.size(); v++)
+			{
+				outgoingIntersectionGraphs.addVertices(this.get(i), this.get(v));
+			}
+		}
+
+		return outgoingIntersectionGraphs;
 	}
-	
-	public void shift(int num)
-	{
-		
-	}
-	
-	
+
 }

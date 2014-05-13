@@ -85,7 +85,7 @@ public class Main
 
 		for (int i = 0; i < numExcluded; i++)
 		{
-			eClone.pop();
+			eClone.removeLast();
 		}
 
 		return eClone;
@@ -116,7 +116,7 @@ public class Main
 			SetFamily union = new SetFamily(n, E);
 			union.add(actualF);
 
-			if (!DeltaFreeSystem.containsDelta(k, union))
+			if (!DeltaFreeUtil.isDeltaK(union, k))
 			{
 				E.add(actualF);
 				F.remove(actualF);

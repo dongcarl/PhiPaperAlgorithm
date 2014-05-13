@@ -13,15 +13,14 @@ import java.util.Set;
 /**
  * Created by dongcarl on 5/5/14.
  */
-public class IntersectionGraphWrapper
+public class IntersectionGraphWrapper extends SimpleGraph
 {
 
 	public IntegerSet intersection;
-	public SimpleGraph<IntegerSet, DefaultEdge> wrappedGraph;
+	public SimpleGraph<IntegerSet, DefaultEdge> this;
 
 	public IntersectionGraphWrapper(Class<? extends DefaultEdge> edgeClass)
 	{
-		wrappedGraph = new SimpleGraph<IntegerSet, DefaultEdge>(edgeClass);
 	}
 
 	public void addVertexPairAndGenerateCorrespondingEdge(VertexPair<IntegerSet> incomingPair)
@@ -39,9 +38,9 @@ public class IntersectionGraphWrapper
 
 		if (intersection.equals(vertexA.intersection(vertexB)))
 		{
-			wrappedGraph.addVertex(vertexA);
-			wrappedGraph.addVertex(vertexB);
-			wrappedGraph.addEdge(vertexA, vertexB);
+			this.addVertex(vertexA);
+			this.addVertex(vertexB);
+			this.addEdge(vertexA, vertexB);
 			methodDidSuceed = true;
 		}
 		else
@@ -55,21 +54,21 @@ public class IntersectionGraphWrapper
 
 	public IntersectionGraphWrapper(Class<? extends DefaultEdge> edgeClass, ArrayList<VertexPair<IntegerSet>> listOfPairs, IntegerSet representativeIntersection)
 	{
-		wrappedGraph = new SimpleGraph<IntegerSet, DefaultEdge>(edgeClass);
+		this = new SimpleGraph<IntegerSet, DefaultEdge>(edgeClass);
 
 		intersection = representativeIntersection;
 
 		for (VertexPair<IntegerSet> currPair : listOfPairs)
 		{
-			wrappedGraph.addVertex(currPair.getFirst());
-			wrappedGraph.addVertex(currPair.getSecond());
-			wrappedGraph.addEdge(currPair.getFirst(), currPair.getSecond());
+			this.addVertex(currPair.getFirst());
+			this.addVertex(currPair.getSecond());
+			this.addEdge(currPair.getFirst(), currPair.getSecond());
 		}
 	}
 
 	public int getBiggestMaximalCliqueNumber()
 	{
-		System.out.println("The IntersectionGraph looks like this: " + wrappedGraph);
+		System.out.println("The IntersectionGraph looks like this: " + this);
 		System.out.println("getBiggestMaximalCliques returns: " + cliqueFinder().getBiggestMaximalCliques());
 		return cliqueFinder().getBiggestMaximalCliques().iterator().next().size();
 	}
@@ -86,7 +85,7 @@ public class IntersectionGraphWrapper
 
 	public BronKerboschCliqueFinder<IntegerSet, DefaultEdge> cliqueFinder()
 	{
-		return new BronKerboschCliqueFinder<IntegerSet, DefaultEdge>(wrappedGraph);
+		return new BronKerboschCliqueFinder<IntegerSet, DefaultEdge>(this);
 	}
 
 	public boolean hasSameIntersectionAs(IntersectionGraphWrapper otherGraphWrapper)
