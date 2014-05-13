@@ -1,18 +1,18 @@
 package edu.choate;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
-import java.util.*;
-import java.lang.Integer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
 
 public class Main
 {
 
 	//Step 1
 
-	static int n = 2;
+	static int n = 3;
 	static int k = 3;
-	static int TARGET = 6;
+	static int TARGET = 15;
 	static double percentExclude = 0.8;
 	static SetFamily E;
 	static IntegerSet V;
@@ -23,8 +23,8 @@ public class Main
 	public static void main(String[] args) throws InterruptedException
 	{
 		E = new SetFamily();
-		V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6));
-		F = getSubsets(V, n);
+		V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
+		F = kSubsetGenerator.getSubsets(V, n);
 		System.out.println(V);
 		idealRVector = new idealRVector(n);
 
@@ -42,11 +42,6 @@ public class Main
 	    System.out.println("\t" + F);
 	    System.out.println("main function called with idealRVector idealRVector =");
 	    System.out.println("\t" + idealRVector);
-
-//		for (int i = 0; i < 10000000; i++)
-//		{
-//			Thread.sleep(10000);
-//		}
 
 	    //Step 2
 		step2(true);
@@ -96,45 +91,6 @@ public class Main
 		return eClone;
 	}
 
-	public static ArrayList<ArrayList<Integer>> allRVectors(ArrayList<ArrayList<Integer>> incomingE, int incomingN)
-	{
-		ArrayList<ArrayList<Integer>> allRs = new ArrayList<ArrayList<Integer>>();
-
-		for (int i = 0; i < incomingE.size(); i++)
-		{
-			allRs.add(rVectorOf(incomingE, i, incomingN));
-		}
-
-		return allRs;
-	}
-
-
-	public static ArrayList<Integer> rVectorOf(ArrayList<ArrayList<Integer>> incomingE, int index, int incomingN)
-	{
-		ArrayList<Integer> outgoingRVector = new ArrayList<Integer>();
-		ArrayList<Integer> f = incomingE.get(index);
-
-		for (int i = 0; i <= incomingN - 1; i++)
-		{
-			int validCounter = 0;
-			for (ArrayList<Integer> e : incomingE)
-			{
-				if (e != f)
-				{
-					ArrayList<Integer> intersection = new ArrayList<Integer>(f);
-					intersection.retainAll(e);
-
-					if (intersection.size() == i)
-					{
-						validCounter++;
-					}
-				}
-			}
-			outgoingRVector.add(validCounter);
-		}
-
-		return outgoingRVector;
-	}
 
 	public static void step2(boolean isRandomShuffle)
 	{
@@ -160,7 +116,7 @@ public class Main
 			SetFamily union = new SetFamily(n, E);
 			union.add(actualF);
 
-			if (!containDelta(union, k))
+			if (!DeltaFreeSystem.containsDelta(k, union))
 			{
 				E.add(actualF);
 				F.remove(actualF);
@@ -168,105 +124,4 @@ public class Main
 		}
 	}
 
-
-
-
-	public static boolean containDelta(SetFamily incomingSet, int incomingK)
-	{
-		DeltaFreeSystem deltaFreeSystem = new DeltaFreeSystem(n, k, incomingSet);
-		return deltaFreeSystem.containsDelta();
-//		intersectionGrid intersectionGrid = new intersectionGrid();
-//
-//		for (int i = 0; i < incomingSet.size(); i++)
-//		{
-//			for (int v = i+1; v < incomingSet.size(); v++)
-//			{
-//				ArrayList<Integer> s1 = incomingSet.get(i);
-//				ArrayList<Integer> s2 = incomingSet.get(v);
-//
-//				ArrayList<Integer> intersection = new ArrayList<Integer>(s1);
-//				intersection.retainAll(s2);
-//
-//				int currInd = intersectionGrid.intersections.indexOf(intersection);
-//
-//				if (currInd == -1)
-//				{
-//					intersectionGrid.intersections.add(intersection);
-//					intersectionGrid.numIntersected.add(1);
-//				}
-//				else
-//				{
-//					intersectionGrid.numIntersected.set(currInd, intersectionGrid.numIntersected.get(currInd) + 1);
-//				}
-//
-//			}
-//		}
-//
-//		long max;
-//		if (intersectionGrid.numIntersected.size() == 0)
-//		{
-//			max = 0;
-//		}
-//		else
-//		{
-//			max = Collections.max(intersectionGrid.numIntersected);
-//		}
-//
-//		return max >= choose(incomingK, 2);
-	}
-
-	public static long choose(long m, long k)
-	{
-		return (factorial(m))/(factorial(k) * factorial(m-k));
-	}
-
-	public static long factorial(long n)
-	{
-		long fact = 1; // this  will be the result
-		for (long i = 1; i <= n; i++)
-		{
-			fact *= i;
-		}
-		return fact;
-	}
-
-//	// Takes in V, the ArrayList of elements, and n, how many elements we need
-//	public static SetFamily allSubsets(IntegerSet incomingArrayList, int incomingNumberOfElements)
-//	{
-//		SetFamily outgoingArrayList = new SetFamily();
-//		SetFamily powerSet = powerSet((IntegerSet)incomingArrayList.clone());
-//
-//		for (IntegerSet set : powerSet)
-//		{
-//			if (set.size() == incomingNumberOfElements)
-//			{
-//				outgoingArrayList.add(set);
-//			}
-//		}
-//
-//		return outgoingArrayList;
-//	}
-
-	private static void getSubsets(IntegerSet superSet, int k, int idx, IntegerSet current,SetFamily solution) {
-		//successful stop clause
-		if (current.size() == k) {
-			solution.add(new IntegerSet(current));
-			return;
-		}
-		//unseccessful stop clause
-		if (idx == superSet.size()) return;
-		Integer x = superSet.get(idx);
-		current.add(x);
-		//"guess" x is in the subset
-		getSubsets(superSet, k, idx+1, current, solution);
-		current.remove(x);
-		//"guess" x is not in the subset
-		getSubsets(superSet, k, idx+1, current, solution);
-	}
-
-	public static SetFamily getSubsets(IntegerSet superSet, int k) {
-		SetFamily res = new SetFamily();
-		getSubsets(superSet, k, 0, new IntegerSet(), res);
-		return res;
-	}
 }

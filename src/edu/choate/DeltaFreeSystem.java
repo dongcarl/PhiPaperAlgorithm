@@ -3,15 +3,7 @@
  */
 package edu.choate;
 
-import org.jgrapht.*;
-import org.jgrapht.alg.BronKerboschCliqueFinder;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.SimpleGraph;
-import sun.java2d.pipe.SpanShapeRenderer;
-
-import java.lang.reflect.ParameterizedType;
-import java.security.InvalidParameterException;
-import java.util.*;
+import java.util.Arrays;
 
 /**
  * This class simulates a family of sets that is delta(n) free for some 
@@ -36,56 +28,34 @@ public class DeltaFreeSystem extends SetFamily
 
         k = incomingK;
 
-	    for (int i = 0; i < incomingE.size(); i++)
-	    {
-		    for (int v = i + 1; v < incomingE.size(); v++)
-		    {
-			    intersectionGraphs.attemptToAddVertices(incomingE.get(i), incomingE.get(v));
-//			    boolean stop = false;
-//			    IntegerSet alphaVertex = incomingE.get(i);
-//			    IntegerSet betaVertex = incomingE.get(v);
-//			    IntegerSet intersection = alphaVertex.intersection(betaVertex);
-//			    for (int j = 0; j < intersectionGraphs.size() && !stop; j++)
-//			    {
-//				    IntersectionGraphWrapper currIntersectionGraph = intersectionGraphs.get(j)
-//				    if (currIntersectionGraph.intersection.equals(intersection))
-//				    {
-//					    currIntersectionGraph.addVerticesAndGenerateCorrespondingEdge(alphaVertex, betaVertex);
-//					    stop = true;
-//				    }
-//				    else if (j == intersectionGraphs.size() - 1)
-//				    {
-//					    IntersectionGraphWrapper currNewIntersectionGraph = new IntersectionGraphWrapper(Intersection.class);
-//					    intersectionGraphs.add(currNewIntersectionGraph);
-//					    currNewIntersectionGraph.addVerticesAndGenerateCorrespondingEdge(alphaVertex, betaVertex);
-//					    stop = true;
-//				    }
-//			    }
-		    }
-	    }
-
-//        System.out.println("Just set k to " + incomingK);
-//
-//        graph = graphFromSetFamily(incomingE);
-//
-//        System.out.println("Just generated graph " + graph + " using method graphFromSetFamily with parameter " + incomingE);
-//
-//        System.out.println("Going to check if E contains delta");
-//        if (this.containsDelta())
-//        {
-//            System.out.println("IT CONTAINS DELTA!!");
-//        }
-//        else
-//        {
-//            System.out.println("IT DOESN'T CONTAIN DELTA!!");
-//        }
+        intersectionGraphs = generateInterSectionGraphFamily(incomingE);
 	}
+
+    public static IntersectionGraphFamilyWrapper generateInterSectionGraphFamily(SetFamily incomingE)
+    {
+        IntersectionGraphFamilyWrapper outgoingIntersectionGraphs = new IntersectionGraphFamilyWrapper();
+
+        for (int i = 0; i < incomingE.size(); i++)
+        {
+            for (int v = i + 1; v < incomingE.size(); v++)
+            {
+                outgoingIntersectionGraphs.attemptToAddVertices(incomingE.get(i), incomingE.get(v));
+            }
+        }
+
+        return outgoingIntersectionGraphs;
+    }
 
     public boolean containsDelta()
     {
 	    System.out.println("Going to check if: " + this + " containsDelta: " + k + "...");
 	    System.out.println("The Largest of All Biggest Maximal Clique Numbers is: " + intersectionGraphs.getLargestOfAllBiggestMaximalCliqueNumbers() + " and k is: " + k);
         return intersectionGraphs.getLargestOfAllBiggestMaximalCliqueNumbers() >= k;
+    }
+
+    public static boolean containsDelta(int incomingK, SetFamily incomingE)
+    {
+        return generateInterSectionGraphFamily(incomingE).getLargestOfAllBiggestMaximalCliqueNumbers() >= incomingK;
     }
 
 //    public boolean graphContainsDelta(SimpleGraph<IntegerSet, Intersection> incomingSimpleGraph)
