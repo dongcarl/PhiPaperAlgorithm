@@ -2,8 +2,10 @@ package edu.choate;
 
 import edu.choate.structures.IntegerSet;
 import edu.choate.structures.IntegerSetUsingRVectorComparator;
+import edu.choate.structures.SetFamily;
 import edu.choate.structures.rVector;
 import edu.choate.utils.DeltaFreeUtil;
+import edu.choate.utils.IntegerSetUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +31,7 @@ public class Main
 	{
 		E = new SetFamily();
 		V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
-		F = kSubsetGenerator.getSubsets(V, n);
+		F = IntegerSetUtils.getSubsets(V, n);
 		System.out.println(V);
 		idealRVector = new rVector(1999, 1999, 1999);
 
@@ -91,7 +93,7 @@ public class Main
 
 		for (int i = 0; i < numExcluded; i++)
 		{
-			eClone.removeLast();
+			eClone.pop();
 		}
 
 		return eClone;
@@ -122,7 +124,7 @@ public class Main
 			SetFamily union = new SetFamily(n, E);
 			union.add(actualF);
 
-			if (!DeltaFreeUtil.isDeltaK(union, k))
+			if (!DeltaFreeUtil.isDeltaKFree(union, k))
 			{
 				E.add(actualF);
 				F.remove(actualF);

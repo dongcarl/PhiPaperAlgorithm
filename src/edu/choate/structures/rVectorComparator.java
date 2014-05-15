@@ -1,6 +1,5 @@
 package edu.choate.structures;
 
-import edu.choate.idealRVector;
 import edu.choate.structures.rVector;
 
 import java.util.Comparator;
@@ -10,9 +9,9 @@ import java.util.Comparator;
  */
 public class rVectorComparator implements Comparator<rVector>
 {
-	public static edu.choate.idealRVector idealRVector;
+	public static rVector idealRVector;
 	
-	public rVectorComparator(idealRVector incomingIdealRVector)
+	public rVectorComparator(rVector incomingIdealRVector)
 	{
 		super();
 		idealRVector = incomingIdealRVector;

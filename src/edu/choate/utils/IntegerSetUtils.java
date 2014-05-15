@@ -1,7 +1,9 @@
 package edu.choate.utils;
 
-import edu.choate.SetFamily;
+import edu.choate.structures.SetFamily;
 import edu.choate.structures.IntegerSet;
+
+import java.util.ArrayList;
 
 /**
  * Created by Yicheng on 5/13/2014.

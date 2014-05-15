@@ -2,7 +2,7 @@ package edu.choate.utils;
 
 import edu.choate.structures.IntegerSet;
 import edu.choate.IntersectionGraph;
-import edu.choate.SetFamily;
+import edu.choate.structures.SetFamily;
 
 import java.util.ArrayList;
 
