@@ -1,7 +1,6 @@
-package edu.choate;
+package edu.choate.structures;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.Vector;
 
 /**
@@ -13,6 +12,11 @@ public class rVector extends Vector<Integer>
 	{
 		super();
 	}
+
+    public rVector(Integer... a)
+    {
+        super(Arrays.asList(a));
+    }
 
 	public double distanceTo(rVector incomingRVector)
 	{

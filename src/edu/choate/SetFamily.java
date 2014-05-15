@@ -1,5 +1,7 @@
 package edu.choate;
 
+import edu.choate.structures.IntegerSet;
+
 import java.util.*;
 
 /**
@@ -10,10 +12,10 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 {
 	public Integer n; // The size of each set
 
-	public SetFamily(int n, ArrayList<IntegerSet> incomingE)
+	public SetFamily(int incomingN, ArrayList<IntegerSet> incomingE)
 	{
 		super();
-		this.n = n;
+		n = incomingN;
  		this.addAll(incomingE);
 	}
 
@@ -22,6 +24,11 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 		super();
 		n = incomingN;
 	}
+
+    public SetFamily(IntegerSet... a)
+    {
+        this.addAll(Arrays.asList(a));
+    }
 
 	public SetFamily()
 	{
@@ -76,19 +83,19 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 		return retSet;
 	}
 
-	public IntersectionGraphFamilyWrapper toIntersectionGraphs()
-	{
-		IntersectionGraphFamilyWrapper outgoingIntersectionGraphs = new IntersectionGraphFamilyWrapper();
-
-		for (int i = 0; i < this.size(); i++)
-		{
-			for (int v = i + 1; v < this.size(); v++)
-			{
-				outgoingIntersectionGraphs.addVertices(this.get(i), this.get(v));
-			}
-		}
-
-		return outgoingIntersectionGraphs;
-	}
+//	public IntersectionGraphFamily toIntersectionGraphs()
+//	{
+//		IntersectionGraphFamily outgoingIntersectionGraphs = new IntersectionGraphFamily();
+//
+//		for (int i = 0; i < this.size(); i++)
+//		{
+//			for (int v = i + 1; v < this.size(); v++)
+//			{
+//				outgoingIntersectionGraphs.addVertices(this.get(i), this.get(v));
+//			}
+//		}
+//
+//		return outgoingIntersectionGraphs;
+//	}
 
 }

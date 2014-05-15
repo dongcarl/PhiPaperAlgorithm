@@ -1,27 +1,32 @@
 package edu.choate;
 
+import edu.choate.structures.IntegerSet;
 import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.util.VertexPair;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
 /**
  * Created by dongcarl on 5/5/14.
  */
-public class IntersectionGraphWrapper extends SimpleGraph
+public class IntersectionGraph extends SimpleGraph<IntegerSet, DefaultEdge>
 {
 
 	public IntegerSet intersection;
-	public SimpleGraph<IntegerSet, DefaultEdge> this;
 
-	public IntersectionGraphWrapper(Class<? extends DefaultEdge> edgeClass)
-	{
-	}
+    public IntersectionGraph()
+    {
+        super(DefaultEdge.class);
+    }
+
+    public IntersectionGraph(IntegerSet incomingIntersection)
+    {
+        super(DefaultEdge.class);
+        intersection = incomingIntersection;
+    }
 
 	public void addVertexPairAndGenerateCorrespondingEdge(VertexPair<IntegerSet> incomingPair)
 	{
@@ -30,7 +35,7 @@ public class IntersectionGraphWrapper extends SimpleGraph
 	
 	public boolean addVerticesAndGenerateCorrespondingEdge(IntegerSet vertexA, IntegerSet vertexB)
 	{
-		boolean methodDidSuceed;
+		boolean methodDidSucceed;
 		if (intersection == null)
 		{
 			intersection = vertexA.intersection(vertexB);
@@ -41,29 +46,15 @@ public class IntersectionGraphWrapper extends SimpleGraph
 			this.addVertex(vertexA);
 			this.addVertex(vertexB);
 			this.addEdge(vertexA, vertexB);
-			methodDidSuceed = true;
+			methodDidSucceed = true;
 		}
 		else
 		{
 			System.out.println("The incomingParameters vertexA: " + vertexA + " and vertexB: " + vertexB + " with intersection: " + vertexA.intersection(vertexB) + " didn't match the intersection " + this.intersection);
-			methodDidSuceed = false;
+			methodDidSucceed = false;
 		}
 
-		return methodDidSuceed;
-	}
-
-	public IntersectionGraphWrapper(Class<? extends DefaultEdge> edgeClass, ArrayList<VertexPair<IntegerSet>> listOfPairs, IntegerSet representativeIntersection)
-	{
-		this = new SimpleGraph<IntegerSet, DefaultEdge>(edgeClass);
-
-		intersection = representativeIntersection;
-
-		for (VertexPair<IntegerSet> currPair : listOfPairs)
-		{
-			this.addVertex(currPair.getFirst());
-			this.addVertex(currPair.getSecond());
-			this.addEdge(currPair.getFirst(), currPair.getSecond());
-		}
+		return methodDidSucceed;
 	}
 
 	public int getBiggestMaximalCliqueNumber()
@@ -88,7 +79,7 @@ public class IntersectionGraphWrapper extends SimpleGraph
 		return new BronKerboschCliqueFinder<IntegerSet, DefaultEdge>(this);
 	}
 
-	public boolean hasSameIntersectionAs(IntersectionGraphWrapper otherGraphWrapper)
+	public boolean hasSameIntersectionAs(IntersectionGraph otherGraphWrapper)
 	{
 		return this.intersection.equals(otherGraphWrapper.intersection);
 	}

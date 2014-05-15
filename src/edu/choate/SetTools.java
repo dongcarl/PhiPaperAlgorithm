@@ -1,5 +1,7 @@
 package edu.choate;
 
+import edu.choate.structures.IntegerSet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 

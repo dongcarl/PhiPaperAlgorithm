@@ -1,6 +1,9 @@
-package edu.choate;
+package edu.choate.structures;
 
-import java.util.ArrayList;
+import edu.choate.SetFamily;
+import edu.choate.structures.IntegerSet;
+import edu.choate.structures.rVector;
+
 import java.util.Comparator;
 import java.util.TreeSet;
 

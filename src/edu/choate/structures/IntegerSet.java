@@ -1,4 +1,4 @@
-package edu.choate;
+package edu.choate.structures;
 
 import java.util.*;
 
@@ -17,6 +17,11 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 		System.out.println("At the end of adding... the IntegerSet looks like: " + this);
 	}
 
+    public IntegerSet(Integer... a)
+    {
+        this.addAll(Arrays.asList(a));
+    }
+
 	public IntegerSet()
 	{
 		super();
@@ -29,26 +34,23 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 			this.add(i);
 		}
 	}
-	
 
 	@Override
 	public boolean add(Integer integer)
 	{
-		if (this.contains(integer))
-		{
-			return false;
-		}
-		else
+        boolean outgoingDidAdd = false;
+		if (!this.contains(integer))
 		{
 			super.add(integer);
-			return true;
+			outgoingDidAdd = true;
 		}
+        return outgoingDidAdd;
 	}
 
 	@Override
 	public void add(int index, Integer element)
 	{
-		if (!super.contains(element))
+		if (!this.contains(element))
 		{
 			super.add(index, element);
 		}
@@ -88,4 +90,5 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 		IntegerSet c = a.intersection(b);
 		System.out.println(c);
 	}
+
 }

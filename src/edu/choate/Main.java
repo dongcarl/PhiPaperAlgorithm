@@ -1,5 +1,10 @@
 package edu.choate;
 
+import edu.choate.structures.IntegerSet;
+import edu.choate.structures.IntegerSetUsingRVectorComparator;
+import edu.choate.structures.rVector;
+import edu.choate.utils.DeltaFreeUtil;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,7 +22,7 @@ public class Main
 	static SetFamily E;
 	static IntegerSet V;
 	static SetFamily F;
-	static idealRVector idealRVector; //need to find ideal R vector
+	static rVector idealRVector; //need to find ideal R vector
 
 
 	public static void main(String[] args) throws InterruptedException
@@ -26,7 +31,7 @@ public class Main
 		V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
 		F = kSubsetGenerator.getSubsets(V, n);
 		System.out.println(V);
-		idealRVector = new idealRVector(n);
+		idealRVector = new rVector(1999, 1999, 1999);
 
 	    System.out.println("main function called with primitive fields:");
 	    System.out.println('\t' + "n = " + n);
@@ -42,6 +47,7 @@ public class Main
 	    System.out.println("\t" + F);
 	    System.out.println("main function called with idealRVector idealRVector =");
 	    System.out.println("\t" + idealRVector);
+
 
 	    //Step 2
 		step2(true);
