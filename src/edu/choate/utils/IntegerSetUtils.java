@@ -30,7 +30,7 @@ public class IntegerSetUtils
     }
 
     public static SetFamily getSubsets(IntegerSet superSet, int k) {
-        SetFamily res = new SetFamily();
+        SetFamily res = new SetFamily(k);
         getSubsets(superSet, k, 0, new IntegerSet(), res);
         return res;
     }

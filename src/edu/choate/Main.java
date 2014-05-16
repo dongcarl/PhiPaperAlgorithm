@@ -29,7 +29,7 @@ public class Main
 
 	public static void main(String[] args) throws InterruptedException
 	{
-		E = new SetFamily();
+		E = new SetFamily(n);
 		V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
 		F = IntegerSetUtils.getSubsets(V, n);
 		System.out.println(V);
@@ -116,15 +116,15 @@ public class Main
 
 		// iterates through F
 
-		ArrayList<ArrayList<Integer>> dup = new ArrayList<ArrayList<Integer>>(F);
+		SetFamily dup = (SetFamily)F.clone();
 
-		for (ArrayList<Integer> f : dup)
+		for (IntegerSet f : dup)
 		{
 			IntegerSet actualF = F.get(F.indexOf(f));
 			SetFamily union = new SetFamily(n, E);
 			union.add(actualF);
 
-			if (!DeltaFreeUtil.isDeltaKFree(union, k))
+			if (DeltaFreeUtil.isDeltaKFree(union, k))
 			{
 				E.add(actualF);
 				F.remove(actualF);
