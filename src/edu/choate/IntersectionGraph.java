@@ -35,7 +35,7 @@ public class IntersectionGraph extends SimpleGraph<IntegerSet, DefaultEdge>
 	
 	public boolean addVerticesAndGenerateCorrespondingEdge(IntegerSet vertexA, IntegerSet vertexB)
 	{
-        System.out.println("adding: " + vertexA + " and " + vertexB);
+//        System.out.println("adding: " + vertexA + " and " + vertexB);
 
 		boolean methodDidSucceed;
 		if (intersection == null)
@@ -43,7 +43,7 @@ public class IntersectionGraph extends SimpleGraph<IntegerSet, DefaultEdge>
 			intersection = vertexA.intersection(vertexB);
 		}
 
-        System.out.println("Going to compare: " + intersection + " with " + vertexA.intersection(vertexB));
+//        System.out.println("Going to compare: " + intersection + " with " + vertexA.intersection(vertexB));
 
 		if (intersection.equals(vertexA.intersection(vertexB)))
 		{
@@ -54,7 +54,7 @@ public class IntersectionGraph extends SimpleGraph<IntegerSet, DefaultEdge>
 		}
 		else
 		{
-			System.out.println("The incomingParameters vertexA: " + vertexA + " and vertexB: " + vertexB + " with intersection: " + vertexA.intersection(vertexB) + " didn't match the intersection " + this.intersection);
+//			System.out.println("The incomingParameters vertexA: " + vertexA + " and vertexB: " + vertexB + " with intersection: " + vertexA.intersection(vertexB) + " didn't match the intersection " + this.intersection);
 			methodDidSucceed = false;
 		}
 
@@ -63,8 +63,8 @@ public class IntersectionGraph extends SimpleGraph<IntegerSet, DefaultEdge>
 
 	public int getBiggestMaximalCliqueNumber()
 	{
-		System.out.println("The IntersectionGraph looks like this: " + this);
-		System.out.println("getBiggestMaximalCliques returns: " + cliqueFinder().getBiggestMaximalCliques());
+//		System.out.println("The IntersectionGraph looks like this: " + this);
+//		System.out.println("getBiggestMaximalCliques returns: " + cliqueFinder().getBiggestMaximalCliques());
 		return cliqueFinder().getBiggestMaximalCliques().iterator().next().size();
 	}
 

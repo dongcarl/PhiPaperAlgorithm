@@ -11,10 +11,10 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 	{
 		for(Integer i : integers)
 		{
-			System.out.println("Attempting to add: " + i);
+//			System.out.println("Attempting to add: " + i);
 			this.add(i);
 		}
-		System.out.println("At the end of adding... the IntegerSet looks like: " + this);
+//		System.out.println("At the end of adding... the IntegerSet looks like: " + this);
 	}
 
     public IntegerSet(Integer... a)

@@ -38,6 +38,18 @@ public class IntersectionUtils
         return outgoingIntersectionGraphs;
 	}
 
+    public static ArrayList<IntersectionGraph> allEmptyIntersectionGraphsOf(ArrayList<IntegerSet> allIntersections)
+    {
+        ArrayList<IntersectionGraph> outgoingIntersectionGraphs = new ArrayList<IntersectionGraph>();
+
+        for (IntegerSet currIntersection : allIntersections)
+        {
+            outgoingIntersectionGraphs.add(new IntersectionGraph(currIntersection));
+        }
+
+        return outgoingIntersectionGraphs;
+    }
+
     public static ArrayList<IntersectionGraph> allFilledIntersectionGraphsOf(SetFamily setFamily)
     {
         ArrayList<IntersectionGraph> outgoingFilledIntersectionGraphs = new ArrayList<IntersectionGraph>(allEmptyIntersectionGraphsOf(setFamily));
@@ -56,4 +68,25 @@ public class IntersectionUtils
 
         return outgoingFilledIntersectionGraphs;
     }
+
+    public static ArrayList<IntersectionGraph> allFilledIntersectionGraphsOf(SetFamily setFamily, ArrayList<IntersectionGraph> allEmptyIntersectionGraphs)
+    {
+        ArrayList<IntersectionGraph> outgoingFilledIntersectionGraphs = new ArrayList<IntersectionGraph>(allEmptyIntersectionGraphs);
+
+        for (int i = 0; i < setFamily.size(); i++)
+        {
+            for (int j = i + 1; j < setFamily.size(); j++)
+            {
+                for (IntersectionGraph graph : outgoingFilledIntersectionGraphs)
+                {
+                    IntersectionGraph origGraph = (IntersectionGraph)graph.clone();
+                    graph.addVerticesAndGenerateCorrespondingEdge(setFamily.get(i), setFamily.get(j));
+                }
+            }
+        }
+
+        return outgoingFilledIntersectionGraphs;
+    }
+
+
 }

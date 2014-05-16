@@ -14,7 +14,7 @@ public class DeltaFreeUtil
 {
 	public static boolean isDeltaKFree(SetFamily setFamily, int k)
 	{
-        ArrayList<Set<IntegerSet>> allBiggest = allBiggestCliquesOfIntersections(setFamily);
+        ArrayList<Set<IntegerSet>> allBiggest = allBiggestCliquesOfIntersectionsOf(setFamily);
         boolean stop = false;
         for (int i = 0; i < allBiggest.size() && !stop; i++)
         {
@@ -26,7 +26,7 @@ public class DeltaFreeUtil
         return !stop;
     }
 
-    public static ArrayList<Set<IntegerSet>> allCliques(SetFamily setFamily)
+    public static ArrayList<Set<IntegerSet>> allCliquesOf(SetFamily setFamily)
     {
         ArrayList<Set<IntegerSet>> outgoingCliques = new ArrayList<Set<IntegerSet>>();
         for (IntersectionGraph graph : IntersectionUtils.allFilledIntersectionGraphsOf(setFamily))
@@ -36,7 +36,7 @@ public class DeltaFreeUtil
         return outgoingCliques;
     }
 
-    public static ArrayList<Set<IntegerSet>> allBiggestCliquesOfIntersections(SetFamily setFamily)
+    public static ArrayList<Set<IntegerSet>> allBiggestCliquesOfIntersectionsOf(SetFamily setFamily)
     {
         ArrayList<Set<IntegerSet>> outgoingCliques = new ArrayList<Set<IntegerSet>>();
         for (IntersectionGraph graph : IntersectionUtils.allFilledIntersectionGraphsOf(setFamily))
@@ -49,7 +49,7 @@ public class DeltaFreeUtil
     public static int deltaOf(SetFamily setFamily)
     {
         int outgoingLargestDelta = Integer.MIN_VALUE;
-        for (Set<IntegerSet> s : allBiggestCliquesOfIntersections(setFamily))
+        for (Set<IntegerSet> s : allBiggestCliquesOfIntersectionsOf(setFamily))
         {
             if (s.size() > outgoingLargestDelta)
             {
