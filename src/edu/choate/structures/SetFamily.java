@@ -1,8 +1,8 @@
 package edu.choate.structures;
 
-import edu.choate.structures.IntegerSet;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  * Created by dongcarl on 4/22/14.
@@ -40,7 +40,11 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 	@Override
 	public boolean add(IntegerSet integerSet)
 	{
-		if (this.contains(integerSet) || (integerSet.size() != this.n))
+        System.out.println("in add:, first boolean returns: " + this.contains(integerSet));
+        System.out.println("in add:, second boolean returns: " + (integerSet.size() != this.n));
+        System.out.println("in add:, size of incoming integerSet is: " + integerSet.size());
+        System.out.println("in add:, n is: " + this.n);
+        if (this.contains(integerSet) || (integerSet.size() != this.n))
 		{
 			return false;
 		}

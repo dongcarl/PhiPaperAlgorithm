@@ -58,10 +58,9 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 	
 	public IntegerSet intersection(IntegerSet right)
 	{
-		IntegerSet retSet= new IntegerSet(this);
+        IntegerSet retSet= new IntegerSet(this);
 		retSet.retainAll(right);
-		return retSet;
-		
+        return retSet;
 	}
 	
 	public IntegerSet union(IntegerSet right)
@@ -77,8 +76,14 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 		retSet.removeAll(right);
 		return retSet;
 	}
-	
-	public static void main(String[] args)
+
+    @Override
+    public boolean equals(Object o)
+    {
+        return (new TreeSet<Integer>(this)).equals((new TreeSet<Integer>((IntegerSet)o)));
+    }
+
+    public static void main(String[] args)
 	{
 		System.out.println("A set a with 1,2,3");
 		IntegerSet a = new IntegerSet(new int[]{1,2,3});

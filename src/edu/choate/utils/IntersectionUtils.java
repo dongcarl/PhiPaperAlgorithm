@@ -1,7 +1,7 @@
 package edu.choate.utils;
 
-import edu.choate.structures.IntegerSet;
 import edu.choate.IntersectionGraph;
+import edu.choate.structures.IntegerSet;
 import edu.choate.structures.SetFamily;
 
 import java.util.ArrayList;
@@ -11,16 +11,16 @@ import java.util.ArrayList;
  */
 public class IntersectionUtils
 {
-	public static SetFamily allIntersectionsOf(SetFamily setFamily)
+	public static ArrayList<IntegerSet> allIntersectionsOf(SetFamily setFamily)
 	{
-		SetFamily outgoingIntersections = new SetFamily();
+		ArrayList<IntegerSet> outgoingIntersections = new ArrayList<IntegerSet>(setFamily.n);
 
 		for (int i = 0; i < setFamily.size(); i++)
 		{
-			for (int v = i; v < setFamily.size(); v++)
+			for (int v = i + 1; v < setFamily.size(); v++)
 			{
-				outgoingIntersections.add(setFamily.get(i).intersection(setFamily.get(v)));
-			}
+                outgoingIntersections.add(setFamily.get(i).intersection(setFamily.get(v)));
+            }
 		}
 
 		return outgoingIntersections;
@@ -44,10 +44,11 @@ public class IntersectionUtils
 
         for (int i = 0; i < setFamily.size(); i++)
         {
-            for (int j = 0; j < setFamily.size(); j++)
+            for (int j = i + 1; j < setFamily.size(); j++)
             {
                 for (IntersectionGraph graph : outgoingFilledIntersectionGraphs)
                 {
+                    IntersectionGraph origGraph = (IntersectionGraph)graph.clone();
                     graph.addVerticesAndGenerateCorrespondingEdge(setFamily.get(i), setFamily.get(j));
                 }
             }

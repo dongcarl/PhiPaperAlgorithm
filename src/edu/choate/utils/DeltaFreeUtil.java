@@ -4,6 +4,9 @@ import edu.choate.IntersectionGraph;
 import edu.choate.structures.IntegerSet;
 import edu.choate.structures.SetFamily;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 /**
  * Created by dongcarl on 5/13/14.
  */
@@ -11,21 +14,49 @@ public class DeltaFreeUtil
 {
 	public static boolean isDeltaKFree(SetFamily setFamily, int k)
 	{
-		return !(deltaOf(setFamily) >= k);
-	}
+        ArrayList<Set<IntegerSet>> allBiggest = allBiggestCliquesOfIntersections(setFamily);
+        boolean stop = false;
+        for (int i = 0; i < allBiggest.size() && !stop; i++)
+        {
+            if (allBiggest.get(i).size() >= k)
+            {
+                stop = true;
+            }
+        }
+        return !stop;
+    }
+
+    public static ArrayList<Set<IntegerSet>> allCliques(SetFamily setFamily)
+    {
+        ArrayList<Set<IntegerSet>> outgoingCliques = new ArrayList<Set<IntegerSet>>();
+        for (IntersectionGraph graph : IntersectionUtils.allFilledIntersectionGraphsOf(setFamily))
+        {
+            outgoingCliques.addAll(graph.getAllMaximalCliques());
+        }
+        return outgoingCliques;
+    }
+
+    public static ArrayList<Set<IntegerSet>> allBiggestCliquesOfIntersections(SetFamily setFamily)
+    {
+        ArrayList<Set<IntegerSet>> outgoingCliques = new ArrayList<Set<IntegerSet>>();
+        for (IntersectionGraph graph : IntersectionUtils.allFilledIntersectionGraphsOf(setFamily))
+        {
+            outgoingCliques.addAll(graph.getBiggestMaximalCliques());
+        }
+        return outgoingCliques;
+    }
 
     public static int deltaOf(SetFamily setFamily)
     {
-        int currLargestDelta = Integer.MIN_VALUE;
-        for (IntersectionGraph graph : IntersectionUtils.allFilledIntersectionGraphsOf(setFamily))
+        int outgoingLargestDelta = Integer.MIN_VALUE;
+        for (Set<IntegerSet> s : allBiggestCliquesOfIntersections(setFamily))
         {
-	        System.out.println("the current graph has maximal clique number: " + graph.getBiggestMaximalCliqueNumber());
-	        if (graph.getBiggestMaximalCliqueNumber() > currLargestDelta)
+            if (s.size() > outgoingLargestDelta)
             {
-                currLargestDelta = graph.getBiggestMaximalCliqueNumber();
+                outgoingLargestDelta = s.size();
             }
         }
-        return currLargestDelta;
+        return outgoingLargestDelta;
     }
 
 	public static void main(String[] args)
@@ -113,6 +144,7 @@ public class DeltaFreeUtil
 //		setFamily.addAll(setFamily2);
 
 		System.out.println(isDeltaKFree(setFamily, 4));
+        System.out.println(deltaOf(setFamily));
 
 	}
 }

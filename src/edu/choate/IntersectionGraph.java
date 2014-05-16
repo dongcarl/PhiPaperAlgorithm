@@ -35,15 +35,19 @@ public class IntersectionGraph extends SimpleGraph<IntegerSet, DefaultEdge>
 	
 	public boolean addVerticesAndGenerateCorrespondingEdge(IntegerSet vertexA, IntegerSet vertexB)
 	{
+        System.out.println("adding: " + vertexA + " and " + vertexB);
+
 		boolean methodDidSucceed;
 		if (intersection == null)
 		{
 			intersection = vertexA.intersection(vertexB);
 		}
 
+        System.out.println("Going to compare: " + intersection + " with " + vertexA.intersection(vertexB));
+
 		if (intersection.equals(vertexA.intersection(vertexB)))
 		{
-			this.addVertex(vertexA);
+            this.addVertex(vertexA);
 			this.addVertex(vertexB);
 			this.addEdge(vertexA, vertexB);
 			methodDidSucceed = true;
