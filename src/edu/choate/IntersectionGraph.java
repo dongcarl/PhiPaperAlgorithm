@@ -87,4 +87,18 @@ public class IntersectionGraph extends SimpleGraph<IntegerSet, DefaultEdge>
 	{
 		return this.intersection.equals(otherGraphWrapper.intersection);
 	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		boolean outgoingEqualsDecision = false;
+		if (obj instanceof IntersectionGraph)
+		{
+			IntersectionGraph incomingIntersectionGraph = (IntersectionGraph)obj;
+			boolean hasSameIntersection = this.intersection.equals(incomingIntersectionGraph.intersection);
+			boolean isSuperEquals = super.equals(obj);
+			outgoingEqualsDecision = hasSameIntersection && isSuperEquals;
+		}
+		return outgoingEqualsDecision;
+	}
 }

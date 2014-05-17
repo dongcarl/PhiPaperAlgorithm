@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by Yicheng on 5/13/2014.
  */
-public class IntegerSetUtils
+public class IntegerSets
 {
 
     //Submitted by amit at http://stackoverflow.com/questions/12548312/find-all-subsets-of-length-k-in-an-array on Sep 22 '12 at 23:02

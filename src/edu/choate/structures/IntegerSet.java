@@ -2,8 +2,10 @@ package edu.choate.structures;
 
 import java.util.*;
 
-/**
- * Created by dongcarl on 4/22/14.
+/** A
+ *
+ * @author Carl Dong, Homo Sapien
+ * @author Matthew Barode, PhD.
  */
 public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
 {
@@ -80,7 +82,7 @@ public class IntegerSet extends ArrayList<Integer> implements Set<Integer>
     @Override
     public boolean equals(Object o)
     {
-        return (new TreeSet<Integer>(this)).equals((new TreeSet<Integer>((IntegerSet)o)));
+        return (new HashSet<Integer>(this)).equals((new HashSet<Integer>((IntegerSet)o)));
     }
 
     public static void main(String[] args)

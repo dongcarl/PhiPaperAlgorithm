@@ -2,6 +2,7 @@ package edu.choate.structures;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -16,7 +17,15 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 	{
 		super();
 		n = incomingN;
- 		this.addAll(incomingE);
+ 		for (IntegerSet i : incomingE)
+	    {
+		    IntegerSet currI = new IntegerSet();
+		    for (Integer in : i)
+		    {
+			    currI.add(new Integer(in));
+		    }
+		    this.add(currI);
+	    }
 	}
 
 	public SetFamily(int incomingN)
@@ -35,6 +44,21 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 	{
 		super();
 		this.n = 3;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		boolean outgoingEqualsDecision = false;
+
+		if (o instanceof SetFamily)
+		{
+			SetFamily incomingSetFamily = (SetFamily)o;
+			boolean hasSameN = (this.n == incomingSetFamily.n);
+			boolean hasSameMembers = (new HashSet<IntegerSet>(this)).equals(new HashSet<IntegerSet>(incomingSetFamily));
+			outgoingEqualsDecision = hasSameN && hasSameMembers;
+		}
+		return outgoingEqualsDecision;
 	}
 
 	@Override

@@ -4,10 +4,9 @@ import edu.choate.structures.IntegerSet;
 import edu.choate.structures.IntegerSetUsingRVectorComparator;
 import edu.choate.structures.SetFamily;
 import edu.choate.structures.rVector;
-import edu.choate.utils.DeltaFreeUtil;
-import edu.choate.utils.IntegerSetUtils;
+import edu.choate.utils.Deltas;
+import edu.choate.utils.IntegerSets;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
@@ -31,9 +30,9 @@ public class Main
 	{
 		E = new SetFamily(n);
 		V = new IntegerSet(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
-		F = IntegerSetUtils.getSubsets(V, n);
+		F = IntegerSets.getSubsets(V, n);
 		System.out.println(V);
-		idealRVector = new rVector(1999, 1999, 1999);
+		idealRVector = new rVector(10, 6, 3);
 
 	    System.out.println("main function called with primitive fields:");
 	    System.out.println('\t' + "n = " + n);
@@ -124,7 +123,7 @@ public class Main
 			SetFamily union = new SetFamily(n, E);
 			union.add(actualF);
 
-			if (DeltaFreeUtil.isDeltaKFree(union, k))
+			if (Deltas.isDeltaKFree(union, k))
 			{
 				E.add(actualF);
 				F.remove(actualF);

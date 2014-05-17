@@ -6,7 +6,7 @@ import edu.choate.structures.SetFamily;
 /**
  * Created by dongcarl on 5/15/14.
  */
-public class SetFamilyUtils
+public class SetFamilies
 {
 
 	/**
