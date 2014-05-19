@@ -11,6 +11,27 @@ import java.util.*;
  */
 public class TestCases
 {
+	public static SetList<Set<Integer>> currTest = new SetList<Set<Integer>>(
+			Arrays.asList(
+					new HashSet<Integer>(Arrays.asList(1, 2, 3)),
+					new HashSet<Integer>(Arrays.asList(1, 2, 4)),
+					new HashSet<Integer>(Arrays.asList(1, 3, 4)),
+					new HashSet<Integer>(Arrays.asList(2, 3, 4)),
+					new HashSet<Integer>(Arrays.asList(1, 5, 6)),
+					new HashSet<Integer>(Arrays.asList(2, 5, 6)),
+					new HashSet<Integer>(Arrays.asList(1, 5, 7)),
+					new HashSet<Integer>(Arrays.asList(1, 6, 7)),
+					new HashSet<Integer>(Arrays.asList(2, 5, 7)),
+					new HashSet<Integer>(Arrays.asList(2, 6, 7)),
+					new HashSet<Integer>(Arrays.asList(4, 8, 9)),
+					new HashSet<Integer>(Arrays.asList(3, 8, 10)),
+					new HashSet<Integer>(Arrays.asList(3, 8, 9)),
+					new HashSet<Integer>(Arrays.asList(4, 9, 10)),
+					new HashSet<Integer>(Arrays.asList(3, 9, 10)),
+					new HashSet<Integer>(Arrays.asList(4, 8, 10))
+			)
+	);
+
 	public static SetList<Set<Integer>> deltaN3K3Free = new SetList<Set<Integer>>(
 		Arrays.asList(
 			new HashSet<Integer>(Arrays.asList(1, 2, 7)),

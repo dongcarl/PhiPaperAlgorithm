@@ -88,8 +88,9 @@ public class Deltas
 
 	public static void main(String[] args)
 	{
-		Set<Set<Integer>> testCase = TestCases.deltaN3K3Free;
+		Set<Set<Integer>> testCase = TestCases.currTest;
 		System.out.println(testCase);
 		System.out.println(allCliquesOf(testCase));
+		System.out.println(isDeltaKFree(testCase, 3));
 	}
 }
