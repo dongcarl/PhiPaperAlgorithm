@@ -3,6 +3,9 @@ package edu.choate.utils;
 import edu.choate.structures.IntegerSet;
 import edu.choate.structures.SetFamily;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by dongcarl on 5/15/14.
  */
@@ -17,10 +20,10 @@ public class SetFamilies
 	 * @author mbardoe
 	 * @
 	 */
-	public static IntegerSet getSupportOf(SetFamily incomingSetFamily)
+	public static Set<Integer> getSupportOf(SetFamily incomingSetFamily)
 	{
-		IntegerSet retSet = new IntegerSet();
-		for (IntegerSet currentSet : incomingSetFamily)
+		Set<Integer> retSet = new HashSet<Integer>();
+		for (Set<Integer> currentSet : incomingSetFamily)
 		{
 			for (Integer vertex: currentSet)
 			{

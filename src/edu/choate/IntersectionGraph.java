@@ -1,5 +1,6 @@
 package edu.choate;
 
+import com.google.common.collect.Sets;
 import edu.choate.structures.IntegerSet;
 import org.jgrapht.alg.BronKerboschCliqueFinder;
 import org.jgrapht.graph.DefaultEdge;
@@ -12,40 +13,40 @@ import java.util.Set;
 /**
  * Created by dongcarl on 5/5/14.
  */
-public class IntersectionGraph extends SimpleGraph<IntegerSet, DefaultEdge>
+public class IntersectionGraph extends SimpleGraph<Set<Integer>, DefaultEdge>
 {
 
-	public IntegerSet intersection;
+	public Set<Integer> intersection;
 
     public IntersectionGraph()
     {
         super(DefaultEdge.class);
     }
 
-    public IntersectionGraph(IntegerSet incomingIntersection)
+    public IntersectionGraph(Set<Integer> incomingIntersection)
     {
         super(DefaultEdge.class);
         intersection = incomingIntersection;
     }
 
-	public void addVertexPairAndGenerateCorrespondingEdge(VertexPair<IntegerSet> incomingPair)
+	public void addVertexPairAndGenerateCorrespondingEdge(VertexPair<Set<Integer>> incomingPair)
 	{
 		addVerticesAndGenerateCorrespondingEdge(incomingPair.getFirst(), incomingPair.getSecond());
 	}
 	
-	public boolean addVerticesAndGenerateCorrespondingEdge(IntegerSet vertexA, IntegerSet vertexB)
+	public boolean addVerticesAndGenerateCorrespondingEdge(Set<Integer> vertexA, Set<Integer> vertexB)
 	{
 //        System.out.println("adding: " + vertexA + " and " + vertexB);
 
 		boolean methodDidSucceed;
 		if (intersection == null)
 		{
-			intersection = vertexA.intersection(vertexB);
+			intersection = Sets.intersection(vertexA, vertexB);
 		}
 
 //        System.out.println("Going to compare: " + intersection + " with " + vertexA.intersection(vertexB));
 
-		if (intersection.equals(vertexA.intersection(vertexB)))
+		if (intersection.equals(Sets.intersection(vertexA, vertexB)))
 		{
             this.addVertex(vertexA);
 			this.addVertex(vertexB);
@@ -68,19 +69,19 @@ public class IntersectionGraph extends SimpleGraph<IntegerSet, DefaultEdge>
 		return cliqueFinder().getBiggestMaximalCliques().iterator().next().size();
 	}
 
-	public Collection<Set<IntegerSet>> getAllMaximalCliques()
+	public Collection<Set<Set<Integer>>> getAllMaximalCliques()
 	{
 		return cliqueFinder().getAllMaximalCliques();
 	}
 
-	public Collection<Set<IntegerSet>> getBiggestMaximalCliques()
+	public Collection<Set<Set<Integer>>> getBiggestMaximalCliques()
 	{
 		return cliqueFinder().getBiggestMaximalCliques();
 	}
 
-	public BronKerboschCliqueFinder<IntegerSet, DefaultEdge> cliqueFinder()
+	public BronKerboschCliqueFinder<Set<Integer>, DefaultEdge> cliqueFinder()
 	{
-		return new BronKerboschCliqueFinder<IntegerSet, DefaultEdge>(this);
+		return new BronKerboschCliqueFinder<Set<Integer>, DefaultEdge>(this);
 	}
 
 	public boolean hasSameIntersectionAs(IntersectionGraph otherGraphWrapper)

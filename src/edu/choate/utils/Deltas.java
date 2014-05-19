@@ -13,9 +13,9 @@ import java.util.Set;
  */
 public class Deltas
 {
-	public static boolean isDeltaKFree(SetFamily setFamily, int k)
+	public static boolean isDeltaKFree(Set<Set<Integer>> setFamily, int k)
 	{
-        ArrayList<Set<IntegerSet>> allBiggest = allBiggestCliquesOfIntersectionsOf(setFamily);
+        ArrayList<Set<Set<Integer>>> allBiggest = allBiggestCliquesOfIntersectionsOf(setFamily);
         boolean stop = false;
         for (int i = 0; i < allBiggest.size() && !stop; i++)
         {
@@ -27,7 +27,7 @@ public class Deltas
         return !stop;
     }
 
-//	public static boolean isDeltaKFree(ArrayList<Set<IntegerSet>> allBiggestCliquesOfIntersections, int k)
+//	public static boolean isDeltaKFree(ArrayList<Set<Set<Integer>>> allBiggestCliquesOfIntersections, int k)
 //	{
 //		boolean stop = false;
 //		for (int i = 0; i < allBiggestCliquesOfIntersections.size() && !stop; i++)
@@ -40,9 +40,9 @@ public class Deltas
 //		return !stop;
 //	}
 
-    public static ArrayList<Set<IntegerSet>> allCliquesOf(SetFamily setFamily)
+    public static ArrayList<Set<Set<Integer>>> allCliquesOf(Set<Set<Integer>> setFamily)
     {
-        ArrayList<Set<IntegerSet>> outgoingCliques = new ArrayList<Set<IntegerSet>>();
+        ArrayList<Set<Set<Integer>>> outgoingCliques = new ArrayList<Set<Set<Integer>>>();
         for (IntersectionGraph graph : Intersections.allFilledIntersectionGraphsOf(setFamily))
         {
 	        outgoingCliques.addAll(graph.getAllMaximalCliques());
@@ -50,9 +50,9 @@ public class Deltas
         return outgoingCliques;
     }
 
-    public static ArrayList<Set<IntegerSet>> allBiggestCliquesOfIntersectionsOf(SetFamily setFamily)
+    public static ArrayList<Set<Set<Integer>>> allBiggestCliquesOfIntersectionsOf(Set<Set<Integer>> setFamily)
     {
-        ArrayList<Set<IntegerSet>> outgoingCliques = new ArrayList<Set<IntegerSet>>();
+        ArrayList<Set<Set<Integer>>> outgoingCliques = new ArrayList<Set<Set<Integer>>>();
         for (IntersectionGraph graph : Intersections.allFilledIntersectionGraphsOf(setFamily))
         {
             outgoingCliques.addAll(graph.getBiggestMaximalCliques());
@@ -60,10 +60,10 @@ public class Deltas
         return outgoingCliques;
     }
 
-    public static int deltaOf(SetFamily setFamily)
+    public static int deltaOf(Set<Set<Integer>> setFamily)
     {
         int outgoingLargestDelta = Integer.MIN_VALUE;
-        for (Set<IntegerSet> s : allBiggestCliquesOfIntersectionsOf(setFamily))
+        for (Set<Set<Integer>> s : allBiggestCliquesOfIntersectionsOf(setFamily))
         {
             if (s.size() > outgoingLargestDelta)
             {
@@ -73,10 +73,10 @@ public class Deltas
         return outgoingLargestDelta;
     }
 
-//	public static int deltaOf(ArrayList<Set<IntegerSet>> allBiggestCliquesOfIntersections)
+//	public static int deltaOf(ArrayList<Set<Set<Integer>>> allBiggestCliquesOfIntersections)
 //	{
 //		int outgoingLargestDelta = Integer.MIN_VALUE;
-//		for (Set<IntegerSet> s : allBiggestCliquesOfIntersections)
+//		for (Set<Set<Integer>> s : allBiggestCliquesOfIntersections)
 //		{
 //			if (s.size() > outgoingLargestDelta)
 //			{
@@ -88,7 +88,7 @@ public class Deltas
 
 	public static void main(String[] args)
 	{
-		SetFamily testCase = TestCases.deltaN3K3Free;
+		Set<Set<Integer>> testCase = TestCases.deltaN3K3Free;
 		System.out.println(testCase);
 		System.out.println(allCliquesOf(testCase));
 	}

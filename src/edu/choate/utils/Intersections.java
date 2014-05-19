@@ -1,5 +1,6 @@
 package edu.choate.utils;
 
+import com.google.common.collect.Sets;
 import edu.choate.IntersectionGraph;
 import edu.choate.TestCases;
 import edu.choate.structures.IntegerSet;
@@ -14,26 +15,28 @@ import java.util.Set;
  */
 public class Intersections
 {
-	public static Set<IntegerSet> allIntersectionsOf(SetFamily setFamily)
+	public static Set<Set<Integer>> allIntersectionsOf(Set<Set<Integer>> setFamily)
 	{
-		Set<IntegerSet> outgoingIntersections = new HashSet<IntegerSet>(setFamily.n);
+		Set<Set<Integer>> outgoingIntersections = new HashSet<Set<Integer>>(/*setFamily.n*/);
 
-		for (int i = 0; i < setFamily.size(); i++)
+		ArrayList<Set<Integer>> arrayList = new ArrayList<Set<Integer>>(setFamily);
+
+		for (int i = 0; i < arrayList.size(); i++)
 		{
-			for (int v = i + 1; v < setFamily.size(); v++)
+			for (int v = i + 1; v < arrayList.size(); v++)
 			{
-                outgoingIntersections.add(setFamily.get(i).intersection(setFamily.get(v)));
+                outgoingIntersections.add(Sets.intersection(arrayList.get(i), arrayList.get(v)));
             }
 		}
 
 		return outgoingIntersections;
 	}
 
-	public static Set<IntersectionGraph> allEmptyIntersectionGraphsOf(SetFamily setFamily)
+	public static Set<IntersectionGraph> allEmptyIntersectionGraphsOf(Set<Set<Integer>> setFamily)
 	{
 		Set<IntersectionGraph> outgoingIntersectionGraphs = new HashSet<IntersectionGraph>();
 
-        for (IntegerSet currIntersection : allIntersectionsOf(setFamily))
+        for (Set<Integer> currIntersection : allIntersectionsOf(setFamily))
         {
 	        outgoingIntersectionGraphs.add(new IntersectionGraph(currIntersection));
         }
@@ -41,17 +44,19 @@ public class Intersections
         return outgoingIntersectionGraphs;
 	}
 
-    public static Set<IntersectionGraph> allFilledIntersectionGraphsOf(SetFamily setFamily)
+    public static Set<IntersectionGraph> allFilledIntersectionGraphsOf(Set<Set<Integer>> setFamily)
     {
 	    Set<IntersectionGraph> outgoingFilledIntersectionGraphs = new HashSet<IntersectionGraph>(allEmptyIntersectionGraphsOf(setFamily));
 
-        for (int i = 0; i < setFamily.size(); i++)
+	    ArrayList<Set<Integer>> arrayList = new ArrayList<Set<Integer>>(setFamily);
+
+	    for (int i = 0; i < arrayList.size(); i++)
         {
-            for (int j = i + 1; j < setFamily.size(); j++)
+            for (int j = i + 1; j < arrayList.size(); j++)
             {
                 for (IntersectionGraph graph : outgoingFilledIntersectionGraphs)
                 {
-                    graph.addVerticesAndGenerateCorrespondingEdge(setFamily.get(i), setFamily.get(j));
+                    graph.addVerticesAndGenerateCorrespondingEdge(arrayList.get(i), arrayList.get(j));
                 }
             }
         }
@@ -61,7 +66,7 @@ public class Intersections
 
 	public static void main(String[] args)
 	{
-		System.out.println("Testing: public static ArrayList<IntegerSet> allIntersectionsOf(SetFamily setFamily)");
+		System.out.println("Testing: public static ArrayList<Set<Integer>> allIntersectionsOf(Set<Set<Integer>> setFamily)");
 		System.out.println("↳ outputted: " + allIntersectionsOf(TestCases.deltaN2K3Free2));
 		System.out.println("↳ expected: " + new SetFamily(
 				3,

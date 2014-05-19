@@ -9,23 +9,15 @@ import java.util.Set;
  * Created by dongcarl on 4/22/14.
  * Objects of this family represent a family of sets of a specific size n.
  */
-public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
+public class SetFamily extends ArrayList<Set<Integer>> implements Set<Set<Integer>>
 {
 	public int n; // The size of each set
 
-	public SetFamily(int incomingN, ArrayList<IntegerSet> incomingE)
+	public SetFamily(int incomingN, ArrayList<Set<Integer>> incomingE)
 	{
 		super();
 		n = incomingN;
- 		for (IntegerSet i : incomingE)
-	    {
-		    IntegerSet currI = new IntegerSet();
-		    for (Integer in : i)
-		    {
-			    currI.add(new Integer(in));
-		    }
-		    this.add(currI);
-	    }
+		this.addAll(incomingE);
 	}
 
 	public SetFamily(int incomingN)
@@ -34,17 +26,11 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 		n = incomingN;
 	}
 
-    public SetFamily(int incomingN, IntegerSet... a)
+    public SetFamily(int incomingN, Set<Integer>... a)
     {
-	    this.n = (a[0]).size();
+	    this.n = incomingN;
         this.addAll(Arrays.asList(a));
     }
-
-	public SetFamily()
-	{
-		super();
-		this.n = 3;
-	}
 
 	@Override
 	public boolean equals(Object o)
@@ -55,14 +41,14 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 		{
 			SetFamily incomingSetFamily = (SetFamily)o;
 			boolean hasSameN = (this.n == incomingSetFamily.n);
-			boolean hasSameMembers = (new HashSet<IntegerSet>(this)).equals(new HashSet<IntegerSet>(incomingSetFamily));
+			boolean hasSameMembers = (new HashSet<Set<Integer>>(this)).equals(new HashSet<Set<Integer>>(incomingSetFamily));
 			outgoingEqualsDecision = hasSameN && hasSameMembers;
 		}
 		return outgoingEqualsDecision;
 	}
 
 	@Override
-	public boolean add(IntegerSet integerSet)
+	public boolean add(Set<Integer> integerSet)
 	{
 //        System.out.println("in add:, first boolean returns: " + this.contains(integerSet));
 //        System.out.println("in add:, second boolean returns: " + (integerSet.size() != this.n));
@@ -80,15 +66,15 @@ public class SetFamily extends ArrayList<IntegerSet> implements Set<IntegerSet>
 	}
 
 	@Override
-	public void add(int index, IntegerSet element)
+	public void add(int index, Set<Integer> element)
 	{
 		this.add(element);
 	}
 
 
-	public IntegerSet pop()
+	public Set<Integer> pop()
 	{
-		IntegerSet outgoingIntegerSet = this.get(this.size()-1);
+		Set<Integer> outgoingIntegerSet = this.get(this.size()-1);
 		this.remove(this.size()-1);
 		return outgoingIntegerSet;
 	}

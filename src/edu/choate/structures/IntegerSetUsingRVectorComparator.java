@@ -1,18 +1,23 @@
 package edu.choate.structures;
 
+import com.google.common.collect.Sets;
+import com.google.common.math.IntMath;
+import edu.choate.utils.IntArrays;
+
 import java.util.Comparator;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
  * Created by dongcarl on 4/22/14.
  */
-public class IntegerSetUsingRVectorComparator implements Comparator<IntegerSet>
+public class IntegerSetUsingRVectorComparator implements Comparator<Set<Integer>>
 {
-	private static rVector idealVector;
-	private static SetFamily entireSet;
+	private static int[] idealVector;
+	private static SetList<Set<Integer>> entireSet;
 	private static int n;
 
-	public IntegerSetUsingRVectorComparator(rVector incomingIdealVector, SetFamily incomingEntireSet, int incomingN)
+	public IntegerSetUsingRVectorComparator(int[] incomingIdealVector, SetList<Set<Integer>> incomingEntireSet, int incomingN)
 	{
 		idealVector = incomingIdealVector;
 		entireSet = incomingEntireSet;
@@ -20,53 +25,28 @@ public class IntegerSetUsingRVectorComparator implements Comparator<IntegerSet>
 	}
 
 	@Override
-	public int compare(IntegerSet incomingTreeSetOfInteger1, IntegerSet incomingTreeSetOfInteger2)
+	public int compare(Set<Integer> incomingTreeSetOfInteger1, Set<Integer> incomingTreeSetOfInteger2)
 	{
-		double distance1 = distanceBetween(idealVector, rVectorOf(incomingTreeSetOfInteger1));
-		double distance2 = distanceBetween(idealVector, rVectorOf(incomingTreeSetOfInteger2));
-
-		return Double.compare(distance1, distance2);
+		return Double.compare(IntArrays.euclideanDistance(idealVector, rVectorOf(incomingTreeSetOfInteger1)), IntArrays.euclideanDistance(idealVector, rVectorOf(incomingTreeSetOfInteger2)));
 	}
 
-	public static rVector rVectorOf(IntegerSet f)
+	public static int[] rVectorOf(Set<Integer> f)
 	{
-		rVector outgoingRVector = new rVector();
-//		TreeSet<Integer> f = entireSet.get(index);
+		int[] outgoingRVector = new int[n];
 
-		for (int i = 0; i <= n - 1; i++)
+		for (int i = 0; i < outgoingRVector.length; i++)
 		{
-			int validCounter = 0;
-			for (IntegerSet e : entireSet)
+			int currValid = 0;
+			for (Set<Integer> e : entireSet)
 			{
-				if (e != f)
+				if (e != f && Sets.intersection(e, f).size() == i)
 				{
-					TreeSet<Integer> intersection = new TreeSet<Integer>(f);
-					intersection.retainAll(e);
-
-					if (intersection.size() == i)
-					{
-						validCounter++;
-					}
+					currValid++;
 				}
 			}
-			outgoingRVector.add(validCounter);
+			outgoingRVector[i] = currValid;
 		}
 
 		return outgoingRVector;
-	}
-
-	public static double distanceBetween(rVector integerArrayList1, rVector integerArrayList2)
-	{
-		long sum = 0;
-
-		if (integerArrayList1.size() == integerArrayList2.size())
-		{
-			for (int i = 0; i < integerArrayList1.size(); i++)
-			{
-				sum += (integerArrayList1.get(i) - integerArrayList2.get(i)) * (integerArrayList1.get(i) - integerArrayList2.get(i));
-			}
-		}
-
-		return Math.sqrt(sum);
 	}
 }
