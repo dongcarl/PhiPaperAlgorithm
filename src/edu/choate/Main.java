@@ -44,6 +44,7 @@ public class Main
         System.out.println("\t" + F);
         System.out.println("main function called with idealRVector idealRVector =");
         System.out.print("\t[");
+        // printing out ideal r vector (create class and make a toString)
         for (int i = 0; i < idealRVector.length; i++)
         {
             if (i < idealRVector.length - 1)
@@ -53,21 +54,23 @@ public class Main
         }
 
 
-        //Step 2
+        //Step 2 shuffle the sets randomly
         System.out.println("Step 2");
-        step2(true);
+        step2(true); // true = randomly
+        System.out.println(E.size());
 
         //Step 3
         System.out.println("Step 3");
         while (E.size() < TARGET)
         {
+        		// modify rVector
             ArrayList<Integer> result = new ArrayList<Integer>();
 
             for (int[] inta : allPossibleRVectors)
             {
                 idealRVector = inta;
-                step3();
-                result.add(Deltas.deltaOf(new HashSet<Set<Integer>>(E)));
+                step3(); // removes elements from E to F and 
+                result.add(E.size());
             }
 
             int[] currIdeal = allPossibleRVectors.get(result.indexOf(Collections.max(result)));
@@ -188,7 +191,7 @@ public class Main
         Collections.sort(eClone, comparator);
 
         int numExcluded = (int) (eClone.size() * incomingExclusionPercentage);
-
+        System.out.println("Excluding "+numExcluded);
         for (int i = 0; i < numExcluded; i++)
         {
             eClone.remove(eClone.size() - 1);
