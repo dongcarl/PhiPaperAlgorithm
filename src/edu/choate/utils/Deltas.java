@@ -1,9 +1,9 @@
 package edu.choate.utils;
 
-import edu.choate.IntersectionGraph;
 import edu.choate.TestCases;
-import edu.choate.structures.IntegerSet;
-import edu.choate.structures.SetFamily;
+import org.jgrapht.alg.BronKerboschCliqueFinder;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -13,8 +13,8 @@ import java.util.Set;
  */
 public class Deltas
 {
-	public static boolean isDeltaKFree(Set<Set<Integer>> setFamily, int k)
-	{
+    public static boolean isDeltaKFree(Set<Set<Integer>> setFamily, int k)
+    {
         ArrayList<Set<Set<Integer>>> allBiggest = allBiggestCliquesOfIntersectionsOf(setFamily);
         boolean stop = false;
         for (int i = 0; i < allBiggest.size() && !stop; i++)
@@ -27,25 +27,12 @@ public class Deltas
         return !stop;
     }
 
-//	public static boolean isDeltaKFree(ArrayList<Set<Set<Integer>>> allBiggestCliquesOfIntersections, int k)
-//	{
-//		boolean stop = false;
-//		for (int i = 0; i < allBiggestCliquesOfIntersections.size() && !stop; i++)
-//		{
-//			if (allBiggestCliquesOfIntersections.get(i).size() >= k)
-//			{
-//				stop = true;
-//			}
-//		}
-//		return !stop;
-//	}
-
     public static ArrayList<Set<Set<Integer>>> allCliquesOf(Set<Set<Integer>> setFamily)
     {
         ArrayList<Set<Set<Integer>>> outgoingCliques = new ArrayList<Set<Set<Integer>>>();
-        for (IntersectionGraph graph : Intersections.allFilledIntersectionGraphsOf(setFamily))
+        for (SimpleGraph<Set<Integer>, DefaultEdge> graph : Intersections.allFilledIntersectionGraphMapOf(setFamily).values())
         {
-	        outgoingCliques.addAll(graph.getAllMaximalCliques());
+            outgoingCliques.addAll((new BronKerboschCliqueFinder<Set<Integer>, DefaultEdge>(graph)).getAllMaximalCliques());
         }
         return outgoingCliques;
     }
@@ -53,9 +40,9 @@ public class Deltas
     public static ArrayList<Set<Set<Integer>>> allBiggestCliquesOfIntersectionsOf(Set<Set<Integer>> setFamily)
     {
         ArrayList<Set<Set<Integer>>> outgoingCliques = new ArrayList<Set<Set<Integer>>>();
-        for (IntersectionGraph graph : Intersections.allFilledIntersectionGraphsOf(setFamily))
+        for (SimpleGraph<Set<Integer>, DefaultEdge> graph : Intersections.allFilledIntersectionGraphMapOf(setFamily).values())
         {
-            outgoingCliques.addAll(graph.getBiggestMaximalCliques());
+            outgoingCliques.addAll((new BronKerboschCliqueFinder<Set<Integer>, DefaultEdge>(graph)).getAllMaximalCliques());
         }
         return outgoingCliques;
     }
@@ -73,24 +60,11 @@ public class Deltas
         return outgoingLargestDelta;
     }
 
-//	public static int deltaOf(ArrayList<Set<Set<Integer>>> allBiggestCliquesOfIntersections)
-//	{
-//		int outgoingLargestDelta = Integer.MIN_VALUE;
-//		for (Set<Set<Integer>> s : allBiggestCliquesOfIntersections)
-//		{
-//			if (s.size() > outgoingLargestDelta)
-//			{
-//				outgoingLargestDelta = s.size();
-//			}
-//		}
-//		return outgoingLargestDelta;
-//	}
-
-	public static void main(String[] args)
-	{
-		Set<Set<Integer>> testCase = TestCases.currTest;
-		System.out.println(testCase);
-		System.out.println(allCliquesOf(testCase));
-		System.out.println(isDeltaKFree(testCase, 3));
-	}
+    public static void main(String[] args)
+    {
+        Set<Set<Integer>> testCase = TestCases.deltaN3K3Free;
+        System.out.println(testCase);
+        System.out.println(allCliquesOf(testCase));
+        System.out.println(isDeltaKFree(testCase, 3));
+    }
 }
