@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * Created by Yicheng on 5/13/2014.
  */
-public class SetUtils
+public class Sets2
 {
     public static <T> Set<Set<T>> getSubsets(Set<T> superSet, int k)
     {

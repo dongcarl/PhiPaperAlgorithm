@@ -7,6 +7,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -63,24 +64,24 @@ public class Intersections
 //        return outgoingFilledIntersectionGraphs;
 //    }
 
-    public static BiMap<Set<Integer>, SimpleGraph<Set<Integer>, DefaultEdge>> allFilledIntersectionGraphMapOf(Set<Set<Integer>> setFamily)
+    public static BiMap<Collection<Integer>, SimpleGraph<Collection<Integer>, DefaultEdge>> allFilledIntersectionGraphMapOf(Collection<? extends Collection<Integer>> setFamily)
     {
-        ArrayList<Set<Integer>> setArrayList = new ArrayList<Set<Integer>>(setFamily);
-        BiMap<Set<Integer>, SimpleGraph<Set<Integer>, DefaultEdge>> outgoingIntersectionMap = HashBiMap.create();
+        ArrayList<? extends Collection<Integer>> setArrayList = new ArrayList<Collection<Integer>>(setFamily);
+        BiMap<Collection<Integer>, SimpleGraph<Collection<Integer>, DefaultEdge>> outgoingIntersectionMap = HashBiMap.create();
 
         for (int i = 0; i < setArrayList.size(); i++)
         {
             for (int j = i + 1; j < setArrayList.size(); j++)
             {
-                Set<Integer> first = setArrayList.get(i);
-                Set<Integer> second = setArrayList.get(j);
-                Set<Integer> currentIntersection = Sets.intersection(first, second);
-                SimpleGraph<Set<Integer>, DefaultEdge> existingGraph;
+                Collection<Integer> first = setArrayList.get(i);
+                Collection<Integer> second = setArrayList.get(j);
+                Set<Integer> currentIntersection = Sets.intersection(Sets.newHashSet(first), Sets.newHashSet(second));
+                SimpleGraph<Collection<Integer>, DefaultEdge> existingGraph;
 
 
                 if (!outgoingIntersectionMap.containsKey(currentIntersection))
                 {
-                    outgoingIntersectionMap.put(currentIntersection, new SimpleGraph<Set<Integer>, DefaultEdge>(DefaultEdge.class));
+                    outgoingIntersectionMap.put(currentIntersection, new SimpleGraph<Collection<Integer>, DefaultEdge>(DefaultEdge.class));
                 }
 
                 existingGraph = outgoingIntersectionMap.get(currentIntersection);
@@ -90,22 +91,6 @@ public class Intersections
             }
         }
         return outgoingIntersectionMap;
-    }
-
-    public static void main(String[] args)
-    {
-//        System.out.println("Testing: public static ArrayList<Set<Integer>> allIntersectionsOf(Set<Set<Integer>> setFamily)");
-//        System.out.println("↳ outputted: " + allIntersectionsOf(TestCases.deltaN2K3Free2));
-//        System.out.println("↳ expected: " + Sets.newHashSet(
-//                Sets.newHashSet(3),
-//                Sets.newHashSet(1),
-//                Sets.newHashSet(2)
-//        ));
-//        System.out.println("↳ .equals says: " + allIntersectionsOf(TestCases.deltaN2K3Free2).equals(Sets.newHashSet(
-//                Sets.newHashSet(3),
-//                Sets.newHashSet(1),
-//                Sets.newHashSet(2)
-//        )));
     }
 
 

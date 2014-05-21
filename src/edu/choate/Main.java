@@ -1,9 +1,9 @@
 package edu.choate;
 
 import com.google.common.collect.Sets;
-import edu.choate.structures.IntegerSetUsingRVectorComparator;
+import edu.choate.learn.rVectorProximityHeuristicComparator;
 import edu.choate.utils.Deltas;
-import edu.choate.utils.SetUtils;
+import edu.choate.utils.Sets2;
 
 import java.util.*;
 
@@ -26,7 +26,7 @@ public class Main
     {
         E = new ArrayList<Set<Integer>>();
         V = Sets.newHashSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
-        F = new ArrayList<Set<Integer>>(SetUtils.getSubsets(V, n));
+        F = new ArrayList<Set<Integer>>(Sets2.getSubsets(V, n));
         System.out.println(V);
         idealRVector = new int[]{10, 6, 3};
 
@@ -63,18 +63,19 @@ public class Main
         System.out.println("Step 3");
         while (E.size() < TARGET)
         {
-        		// modify rVector
-            ArrayList<Integer> result = new ArrayList<Integer>();
+            ArrayList<Integer> allSizes = new ArrayList<Integer>();
 
-            for (int[] inta : allPossibleRVectors)
+            for (int[] currentRVector : allPossibleRVectors)
             {
-                idealRVector = inta;
-                step3(); // removes elements from E to F and 
-                result.add(E.size());
+                HashSet<Set<Integer>> eDup = new HashSet<Set<Integer>>(E);
+                HashSet<Set<Integer>> fDup = new HashSet<Set<Integer>>(F);
+
+                step3(eDup, fDup, currentRVector, percentExclude); // removes elements from E to F and
+
+                allSizes.add(eDup.size());
             }
 
-            int[] currIdeal = allPossibleRVectors.get(result.indexOf(Collections.max(result)));
-            idealRVector = currIdeal;
+            idealRVector = allPossibleRVectors.get(allSizes.indexOf(Collections.max(allSizes)));
 
         }
 
@@ -97,13 +98,13 @@ public class Main
         System.out.println(F);
     }
 
-    public static void step3()
+    public static void step3(Collection<Set<Integer>> incomingE, Collection<Set<Integer>> incomingF, int[] incomingIdealRVector, double incomingPercentExclude)
     {
 
-        System.out.println("↳ E has size: " + E.size());
-        ArrayList<Set<Integer>> selectedElements = selectedElements(percentExclude);
-        F.addAll(selectedElements);
-        E.removeAll(selectedElements);
+        System.out.println("↳ E has size: " + incomingE.size());
+        ArrayList<Set<Integer>> selectedElements = selectedElements(incomingPercentExclude, incomingE, incomingIdealRVector);
+        incomingF.addAll(selectedElements);
+        incomingE.removeAll(selectedElements);
 
         step2(false);
     }
@@ -113,7 +114,7 @@ public class Main
         ArrayList<ArrayList<Integer>> sets = new ArrayList<ArrayList<Integer>>();
         ArrayList<int[]> outgoing = new ArrayList<int[]>();
 
-        for (int i = 0; i < k; i++)
+        for (int i = 0; i < n; i++)
         {
             sets.add(new ArrayList<Integer>());
             for (int j = 0; j < TARGET; j++)
@@ -184,14 +185,14 @@ public class Main
         return computed;
     }
 
-    public static ArrayList<Set<Integer>> selectedElements(double incomingExclusionPercentage)
+    public static ArrayList<Set<Integer>> selectedElements(double incomingExclusionPercentage, Collection<Set<Integer>> incomingE, int[] incomingIdealRVector)
     {
-        ArrayList<Set<Integer>> eClone = new ArrayList<Set<Integer>>(E);
-        IntegerSetUsingRVectorComparator comparator = new IntegerSetUsingRVectorComparator(idealRVector, eClone, n);
+        ArrayList<Set<Integer>> eClone = new ArrayList<Set<Integer>>(incomingE);
+        rVectorProximityHeuristicComparator comparator = new rVectorProximityHeuristicComparator(incomingIdealRVector, eClone, n);
         Collections.sort(eClone, comparator);
 
         int numExcluded = (int) (eClone.size() * incomingExclusionPercentage);
-        System.out.println("Excluding "+numExcluded);
+        System.out.println("Excluding " + numExcluded);
         for (int i = 0; i < numExcluded; i++)
         {
             eClone.remove(eClone.size() - 1);
@@ -209,7 +210,7 @@ public class Main
             Collections.shuffle(F, new Random(seed));
         } else
         {
-            Collections.sort(F, new IntegerSetUsingRVectorComparator(idealRVector, F, n));
+            Collections.sort(F, new rVectorProximityHeuristicComparator(idealRVector, F, n));
         }
         // shuffles F
 
