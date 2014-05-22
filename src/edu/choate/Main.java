@@ -1,5 +1,6 @@
 package edu.choate;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import edu.choate.learn.rVectorPossibilities;
 import edu.choate.learn.rVectorProximityHeuristicComparator;
@@ -68,8 +69,8 @@ public class Main
 
             for (int[] currentRVector : allPossibleRVectors)
             {
-                HashSet<Set<Integer>> eDup = new HashSet<Set<Integer>>(E);
-                HashSet<Set<Integer>> fDup = new HashSet<Set<Integer>>(F);
+                Set<Set<Integer>> eDup = new HashSet<Set<Integer>>(E);
+                Set<Set<Integer>> fDup = new HashSet<Set<Integer>>(F);
 
                 step3Body(eDup, fDup, currentRVector, percentExclude); // removes elements from E to F and
 
@@ -129,13 +130,72 @@ public class Main
 
     public static void step3Body(Collection<Set<Integer>> incomingE, Collection<Set<Integer>> incomingF, int[] incomingIdealRVector, double incomingPercentExclude)
     {
+        Set<Set<Integer>> eDup = new HashSet<Set<Integer>>(incomingE);
+        Preconditions.checkState(eDup.equals(incomingE), "Duplicating E didn't work properly");
 
-        System.out.println("↳ E has size: " + incomingE.size());
+        Set<Set<Integer>> fDup = new HashSet<Set<Integer>>(incomingF);
+        Preconditions.checkState(fDup.equals(incomingF), "Duplicating F didn't work properly");
+
+
+        System.out.println("Starting step 3 with:");
+        System.out.println("\tE of size: " + incomingE.size());
+        System.out.println("\t\t" + incomingE);
+        System.out.println("\tF of size: " + incomingF.size());
+        System.out.println("\t\t" + incomingF);
+        System.out.println("\tIdeal R-Vector of size: " + incomingIdealRVector.length);
+        System.out.println("\t\t" + Arrays.toString(incomingIdealRVector));
+        System.out.println("Removing the bottom " + incomingPercentExclude*100 + "% of elements in E and adding them to F");
+        System.out.println("--------------------------DON'T MIND ME I'M JUST HERE TO DIVIDE THINGS UP--------------------------");
+
         ArrayList<Set<Integer>> selectedElements = selectedElements(incomingPercentExclude, incomingE, incomingIdealRVector);
+        Preconditions.checkState(incomingE.containsAll(selectedElements), "Some of the selected arguments are not in E");
+
+        int numAdded = incomingF.size();
         incomingF.addAll(selectedElements);
+        numAdded = incomingF.size() - numAdded;
+
+        int numRemoved = incomingE.size();
         incomingE.removeAll(selectedElements);
+        numRemoved = numRemoved - incomingE.size();
+
+        Preconditions.checkState(numAdded == numRemoved, "The number of elements added to F is not equal to the number of elements removed from E");
+
+        System.out.println("In the middle of step 3 with:");
+        System.out.println("\tE of size: " + incomingE.size());
+        System.out.println("\t\t" + incomingE);
+        System.out.println("\t\t" + "with " + Sets.difference(eDup, new HashSet<Set<Integer>>(incomingE)) + "removed");
+        System.out.println("\t\t" + "with " + Sets.difference(new HashSet<Set<Integer>>(incomingE), eDup) + "added");
+        System.out.println("\tF of size: " + incomingF.size());
+        System.out.println("\t\t" + incomingF);
+        System.out.println("\t\t" + "with " + Sets.difference(fDup, new HashSet<Set<Integer>>(incomingF)) + "removed");
+        System.out.println("\t\t" + "with " + Sets.difference(new HashSet<Set<Integer>>(incomingF), fDup) + "added");
+        System.out.println("\tIdeal R-Vector of size: " + incomingIdealRVector.length);
+        System.out.println("\t\t" + Arrays.toString(incomingIdealRVector));
+        System.out.println("Removing the bottom " + incomingPercentExclude*100 + "% of elements in E and adding them to F");
+        System.out.println("--------------------------DON'T MIND ME I'M JUST HERE TO DIVIDE THINGS UP--------------------------");
+
+        eDup = new HashSet<Set<Integer>>(incomingE);
+        fDup = new HashSet<Set<Integer>>(incomingF);
 
         step2(false);
+
+
+
+
+
+        System.out.println("Ending step 3 with:");
+        System.out.println("\tE of size: " + incomingE.size());
+        System.out.println("\t\t" + incomingE);
+        System.out.println("\t\t" + "with " + Sets.difference(eDup, new HashSet<Set<Integer>>(incomingE)) + "removed");
+        System.out.println("\t\t" + "with " + Sets.difference(new HashSet<Set<Integer>>(incomingE), eDup) + "added");
+        System.out.println("\tF of size: " + incomingF.size());
+        System.out.println("\t\t" + incomingF);
+        System.out.println("\t\t" + "with " + Sets.difference(fDup, new HashSet<Set<Integer>>(incomingF)) + "removed");
+        System.out.println("\t\t" + "with " + Sets.difference(new HashSet<Set<Integer>>(incomingF), fDup) + "added");
+        System.out.println("\tIdeal R-Vector of size: " + incomingIdealRVector.length);
+        System.out.println("\t\t" + Arrays.toString(incomingIdealRVector));
+        System.out.println("Removing the bottom " + incomingPercentExclude*100 + "% of elements in E and adding them to F");
+        System.out.println("--------------------------DON'T MIND ME I'M JUST HERE TO DIVIDE THINGS UP--------------------------");
     }
 
     public static ArrayList<Set<Integer>> selectedElements(double incomingExclusionPercentage, Collection<Set<Integer>> incomingE, int[] incomingIdealRVector)
@@ -145,7 +205,7 @@ public class Main
         Collections.sort(eClone, comparator);
 
         int numExcluded = (int) (eClone.size() * incomingExclusionPercentage);
-        System.out.println("Excluding " + numExcluded);
+//        System.out.println("Excluding " + numExcluded);
         for (int i = 0; i < numExcluded; i++)
         {
             eClone.remove(eClone.size() - 1);
