@@ -77,30 +77,30 @@ public class Main
         System.out.println("Main.constructDeltaInteractive");
     }
 
-    public static int constructSetFamilyInteractive()
+    public static void constructSetFamilyInteractive()
     {
-        System.out.println("We're now going to construct a family of sets");
-        System.out.printf("How many items would you have to have in each set?");
-
-        int setSize = Integer.MIN_VALUE;
-        String input = getFromSysIn();
-        if (isInteger(input))
-        {
-            setSize = Integer.parseInt(input);
-        }
-        else
-        {
-            System.out.println("You didn't input a numerical size, according to conventions of early 21st century homo sapiens, a numerical size implies that it is a positive decimal integer");
-            delay(0.5);
-            setSize = constructSetFamilyInteractive();
-        }
-
-        if (setSize < 0)
-        {
-            System.out.println("Can't have a size less than zero");
-            delay(0.5);
-            setSize = constructSetFamilyInteractive();
-        }
+//        System.out.println("We're now going to construct a family of sets");
+//        System.out.printf("How many items would you have to have in each set?");
+//
+//        int setSize = Integer.MIN_VALUE;
+//        String input = getFromSysIn();
+//        if (isInteger(input))
+//        {
+//            setSize = Integer.parseInt(input);
+//        }
+//        else
+//        {
+//            System.out.println("You didn't input a numerical size, according to conventions of early 21st century homo sapiens, a numerical size implies that it is a positive decimal integer");
+//            delay(0.5);
+//            setSize = constructSetFamilyInteractive();
+//        }
+//
+//        if (setSize < 0)
+//        {
+//            System.out.println("Can't have a size less than zero");
+//            delay(0.5);
+//            setSize = constructSetFamilyInteractive();
+//        }
     }
 
     public static void checkDeltaInteractive()

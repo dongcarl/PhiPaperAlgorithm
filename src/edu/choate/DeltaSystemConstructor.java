@@ -1,10 +1,14 @@
 package edu.choate;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import edu.choate.learn.rVectorPossibilities;
 import edu.choate.learn.rVectorProximityHeuristicComparator;
 import edu.choate.utils.Deltas;
+import edu.choate.utils.IntArrays;
 import edu.choate.utils.Sets2;
 
 import java.util.*;
@@ -124,9 +128,9 @@ public class DeltaSystemConstructor
             Collections.sort(incomingF, new rVectorProximityHeuristicComparator(incomingRVector, F, n));
         }
 
-        Set<Set<Integer>> eDup = new HashSet<Set<Integer>>(incomingF);
+        Set<Set<Integer>> fDup = new HashSet<Set<Integer>>(incomingF);
 
-        for (Set<Integer> f : eDup)
+        for (Set<Integer> f : fDup)
         {
 
             Set<Integer> actualF = incomingF.get(incomingF.indexOf(f));
@@ -217,11 +221,34 @@ public class DeltaSystemConstructor
         rVectorProximityHeuristicComparator comparator = new rVectorProximityHeuristicComparator(incomingIdealRVector, eClone, n);
         Collections.sort(eClone, comparator);
 
-        int numExcluded = (int) (eClone.size() * incomingExclusionPercentage);
-//        System.out.println("Excluding " + numExcluded);
-        for (int i = 0; i < numExcluded; i++)
+        BiMap<Set<Integer>, Double> map = HashBiMap.create();
+
+        double sum = 0;
+        int[] firstRVec = rVectorProximityHeuristicComparator.rVectorOf(eClone.get(0), eClone);
+        double firstRVecProximity = IntArrays.euclideanDistance(firstRVec, incomingIdealRVector);
+        for (int i = 0; i < eClone.size(); i++)
         {
-            eClone.remove(eClone.size() - 1);
+            Set<Integer> is = eClone.get(i);
+            int[] rVec = rVectorProximityHeuristicComparator.rVectorOf(is, eClone);
+            double rVecProximity = IntArrays.euclideanDistance(rVec, incomingIdealRVector);
+            double ratio = rVecProximity/firstRVecProximity;
+            sum += ratio;
+            map.put(is, ratio);
+        }
+
+        ArrayList<Double> allProbabilities = new ArrayList<Double>();
+        for (Double d : map.values())
+        {
+            allProbabilities.add(d/sum);
+        }
+
+        for (Double d : map.values())
+        {
+            double randomVal = Math.random();
+            if (randomVal < d)
+            {
+                map.remove(map.inverse().get(d));
+            }
         }
 
         return eClone;
