@@ -1,8 +1,9 @@
 package edu.choate.utils;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -10,16 +11,31 @@ import java.util.Set;
  */
 public class Sets2
 {
-    public static <T> Set<Set<T>> getSubsets(Set<T> superSet, int k)
+
+    public static <T> Set<Set<T>> getSubsets(final Set<T> superSet, final int k)
     {
-        Set<Set<T>> setFamily = new HashSet<Set<T>>();
-        for (Set<T> s : Sets.powerSet(superSet))
+        return Sets.filter(Sets.powerSet(superSet), new CollectionSizePredicate(k));
+    }
+
+}
+
+class CollectionSizePredicate implements Predicate<Collection>
+{
+    private int size;
+
+    public CollectionSizePredicate(int incomingSize)
+    {
+        size = incomingSize;
+    }
+
+    @Override
+    public boolean apply(Collection incomingCollection)
+    {
+        boolean outgoingHasValidSizeDecision = false;
+        if (incomingCollection.size() == size)
         {
-            if (s.size() == k)
-            {
-                setFamily.add(s);
-            }
+            outgoingHasValidSizeDecision = true;
         }
-        return setFamily;
+        return outgoingHasValidSizeDecision;
     }
 }
