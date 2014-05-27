@@ -12,9 +12,9 @@ import java.util.Set;
 public class Sets2
 {
 
-    public static <T> Set<Set<T>> getSubsets(final Set<T> superSet, final int k)
+    public static <T> Collection<Set<T>> getSubsets(final Collection<T> superSet, final int k)
     {
-        return Sets.filter(Sets.powerSet(superSet), new CollectionSizePredicate(k));
+        return Sets.filter(Sets.powerSet(Sets.newHashSet(superSet)), new CollectionSizePredicate(k));
     }
 
 }
